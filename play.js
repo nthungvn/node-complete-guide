@@ -1,6 +1,8 @@
-var name = 'Hung';
-var age = 28;
-var isHobbies = true;
+const name = 'Hung';
+let age = 28;
+const isHobbies = true;
+
+age = 29;
 
 function getSummary(name, age, isHobbies) {
   return (
