@@ -1,4 +1,5 @@
 const http = require('http');
+const fs = require('fs');
 
 const server = http.createServer((req, res) => {
   const { url, method } = req;
@@ -21,7 +22,9 @@ const server = http.createServer((req, res) => {
     res.write(resHtml);
   }
   if (url === '/message' && method === 'POST') {
-    console.log('POST');
+    fs.writeFileSync('message.txt', "Message");
+    res.statusCode = 302;
+    res.setHeader('Location', '/');
   }
   res.end();
 });
