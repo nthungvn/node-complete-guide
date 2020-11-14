@@ -53,3 +53,11 @@ const printHobbies = (...hobbies) => {
 
 printHobbies(copiedArray);
 
+const product = {
+  type: 'GOOD',
+  quantity: 20,
+};
+
+const { type, quantity } = product;
+
+console.log(type, quantity);
