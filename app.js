@@ -14,7 +14,6 @@ const server = http.createServer((req, res) => {
         <body>
           <form action="/message" method="POST">
             <input type="text" name="message"/>
-            <input type="text" name="name" />
             <button type="submit">Submit</button>
           </form>
         </body>
@@ -30,8 +29,8 @@ const server = http.createServer((req, res) => {
     });
     req.on('end', () => {
       const parseData = Buffer.concat(data).toString();
-      console.log(parseData);
-      fs.writeFileSync('message.txt', parseData);
+      const message = parseData.split('=')[1];
+      fs.writeFileSync('message.txt', message);
     });
     res.statusCode = 302;
     res.setHeader('Location', '/');
