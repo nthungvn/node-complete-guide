@@ -61,3 +61,12 @@ const product = {
 const { type, quantity } = product;
 
 console.log(type, quantity);
+
+const [hobby1, hobby2] = hobbies;
+console.log(hobby1, hobby2);
+
+const printName = ({ name }) => {
+  console.log(`My name is ${name}`);
+};
+
+printName(person);
