@@ -51,7 +51,7 @@ const printHobbies = (...hobbies) => {
   }
 };
 
-printHobbies(copiedArray);
+printHobbies('Hiking', 'Cooking');
 
 const product = {
   type: 'GOOD',
