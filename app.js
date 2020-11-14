@@ -1,15 +1,29 @@
 const http = require('http');
 
 const server = http.createServer((req, res) => {
-  console.log(req.url, req.method, req.headers);
-  const resData = {
-    message: 'Hello world',
-    status: 200,
-  };
-  res.setHeader('Content-Type', 'application/json');
-  res.write(JSON.stringify(resData));
+  const { url, method } = req;
+  res.setHeader('Content-Type', 'text/html');
+
+  if (url === '/' && method === 'GET') {
+    const resHtml = `
+      <html>
+        <head>
+          <title>Enter Message</title>
+        </head>
+        <body>
+          <form action="/message" method="POST">
+            <input type="text" name="message"/>
+            <button type="submit">Submit</button>
+          </form>
+        </body>
+      </html>
+    `;
+    res.write(resHtml);
+  }
+  if (url === '/message' && method === 'POST') {
+    console.log('POST');
+  }
   res.end();
-  // process.exit();
 });
 
 server.listen(process.env.PORT || 3000);
