@@ -23,7 +23,10 @@ const person = {
   },
 };
 
+const copiedPerson = { ...person };
+
 person.greet();
+copiedPerson.greet();
 
 const hobbies = ['Sport', 'Coding', 'Walking'];
 for (let hobby of hobbies) {
@@ -35,3 +38,18 @@ console.log(hobbies);
 hobbies.push('Swimming');
 
 console.log(hobbies);
+
+// const copiedArray = hobbies.slice();
+// const copiedArray = [hobbies]; // Nested array, not a spread operator
+const copiedArray = [...hobbies];
+
+console.log(copiedArray);
+
+const printHobbies = (...hobbies) => {
+  for (let hobby of hobbies) {
+    console.log(hobby);
+  }
+};
+
+printHobbies(copiedArray);
+
