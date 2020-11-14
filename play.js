@@ -12,3 +12,15 @@ const getSummary = (name, age, isHobbies) => {
 };
 
 console.log(getSummary(name, age, isHobbies));
+
+const person = {
+  name: 'Hung',
+  age: 28,
+  // greet: () => { // Ignore this keyword
+  // greet: function () {
+  greet() {
+    console.log('Hi, my name is', this.name);
+  },
+};
+
+person.greet();
