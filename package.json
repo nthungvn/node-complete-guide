@@ -4,7 +4,7 @@
   "description": "Node.js - The Complete Guide",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "test": "jest"
   },
   "repository": {
@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/nthungvn/node-complete-guide/issues"
   },
-  "homepage": "https://github.com/nthungvn/node-complete-guide#readme"
+  "homepage": "https://github.com/nthungvn/node-complete-guide#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
 }
