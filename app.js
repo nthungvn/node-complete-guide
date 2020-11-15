@@ -1,20 +1,28 @@
 const http = require('http');
 
 const express = require('express');
+const bodyParser = require('body-parser');
+
 const app = express();
 
-app.use('/', (req, res, next) => {
-  console.log('This always run');
-  next();
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/add-product', (req, res, next) => {
+  res.send(`
+    <form action="/product" method="POST">
+      <label for="product-name">Product Name</label>
+      <input type="text" id="product-name" name="productName" />
+      <button type="submit">Submit</button>
+    </form>
+  `);
 });
 
-app.use('/users', (req, res, next) => {
-  console.log('In another middleware');
-  res.send('<h1>List users</h1>');
+app.use('/product', (req, res, next) => {
+  console.log(req.body);
+  res.redirect('/');
 });
 
 app.use('/', (req, res, next) => {
-  console.log('In the middleware');
   res.send('<h1>Welcome to Express.js world</h1>');
 });
 
