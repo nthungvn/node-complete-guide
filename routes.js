@@ -1,9 +1,11 @@
+const { IncomingMessage, ServerResponse } = require('http');
+
 /**
  * @param {IncomingMessage} req
  * @param {ServerResponse} res
  */
 const requestHandler = (req, res) => {
-  const { url } = req;
+  const { url, method } = req;
   let htmlRes = '';
 
   res.setHeader('Content-Type', 'text/html');
@@ -43,6 +45,19 @@ const requestHandler = (req, res) => {
         </body>
       </html>
     `;
+  }
+
+  if (url === '/create-user' && method === 'POST') {
+    const rawData = [];
+    req.on('data', (chunk) => rawData.push(chunk));
+    req.on('end', () => {
+      const parseData = Buffer.concat(rawData).toString();
+      const username = parseData.split('=')[1];
+      console.log(`User ${username} registered`);
+    });
+
+    res.statusCode = 302;
+    res.setHeader('Location', '/');
   }
 
   res.write(htmlRes);
