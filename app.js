@@ -1,9 +1,11 @@
 const http = require('http');
 
-const routes = require('./routes');
+const express = require('express');
 
-console.log(routes.someText);
+const app = express();
+app.use((req, res) => {
+  res.send('OK');
+});
 
-const server = http.createServer(routes.handler);
-
+const server = http.createServer(app);
 server.listen(process.env.PORT || 3000);
