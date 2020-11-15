@@ -15,7 +15,12 @@ const requestHandler = (req, res) => {
           <title>Node.js The Complete Guide</title>
         </head>
         <body>
-          <h1>Hey there, welcome to the Node.js - The complete guide</h1>
+          <h1>Enter your information</h1>
+          <form action="/create-user" method="POST">
+            <label for="username">Username</label>
+            <input id="username" name="username" />
+            <button type="submit">Submit</button>
+          </form>
         </body>
       </html>
     `;
