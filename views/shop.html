@@ -4,58 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Online shop</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: sans-serif;
-      }
-
-      main {
-        margin: 0 40px;
-      }
-
-      .main-header {
-        height: 56px;
-        background-color: rgb(216, 187, 25);
-        padding: 0 40px;
-      }
-
-      .main-header__nav {
-        height: 100%;
-      }
-
-      .main-header__items {
-        margin: 0;
-        list-style: none;
-        height: 100%;
-        vertical-align: middle;
-        padding: 0;
-        display: flex;
-        align-items: center;
-      }
-
-      .main-header__item {
-        margin: 0 1rem;
-      }
-
-      .main-header__item a {
-        text-decoration: none;
-        color: white;
-      }
-
-      .main-header__item a:hover,
-      .main-header__item a:active,
-      .main-header__item a.active {
-        color: #d10a0a;
-      }
-    </style>
+    <link rel="stylesheet" href="/css/main.css" />
   </head>
   <body>
     <header class="main-header">
       <nav class="main-header__nav">
         <ul class="main-header__items">
           <li class="main-header__item"><a href="/" class="active">Shop</a></li>
-          <li class="main-header__item"><a href="/admin/add-product">Add Product</a></li>
+          <li class="main-header__item">
+            <a href="/admin/add-product">Add Product</a>
+          </li>
         </ul>
       </nav>
     </header>
