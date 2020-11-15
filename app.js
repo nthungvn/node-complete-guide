@@ -4,13 +4,11 @@ const express = require('express');
 
 const app = express();
 
-app.use((req, res, next) => {
-  console.log('The first middleware');
-  next();
+app.use('/users', (req, res, next) => {
+  res.send('<h1>Users Management</h1>');
 });
 
-app.use((req, res, next) => {
-  console.log('The second middleware');
+app.use('/', (req, res, next) => {
   res.send('<h1>Welcome to Node.js</h1>');
 });
 
