@@ -1,12 +1,12 @@
+const path = require('path');
+
 const express = require('express');
 
 const routes = express.Router();
 
 // /admin/add-product => GET
 routes.get('/add-product', (req, res, next) => {
-  res.send(`
-
-  `);
+  res.sendFile(path.join(__dirname, '../', 'views', 'add-product.html'));
 });
 
 // /admin/add-product => POST
