@@ -1,0 +1,23 @@
+{
+  "name": "node-complete-guide",
+  "version": "1.0.0",
+  "description": "Node.js - The Complete Guide",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nthungvn/node-complete-guide.git"
+  },
+  "keywords": [
+    "node.js"
+  ],
+  "author": "Hung Nguyen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nthungvn/node-complete-guide/issues"
+  },
+  "homepage": "https://github.com/nthungvn/node-complete-guide#readme"
+}
