@@ -10,8 +10,6 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   console.log('In another middleware');
-
+  res.send('<h1>Welcome to Express.js world</h1>');
 });
-
-const server = http.createServer(app);
-server.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3000);
