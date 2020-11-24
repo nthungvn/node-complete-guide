@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Product</title>
     <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/product.css" />
   </head>
   <body>
     <header class="main-header">
@@ -19,8 +20,10 @@
     </header>
     <main>
       <form action="/admin/add-product" method="POST">
-        <label for="product-name">Product Name</label>
-        <input type="text" id="product-name" name="productName" />
+        <div class="form-group">
+          <label for="product-name" class="form-control">Product Name</label>
+          <input type="text" id="product-name" name="productName" class="form-control" />
+        </div>
         <button type="submit">Submit</button>
       </form>
     </main>
