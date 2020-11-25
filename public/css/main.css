@@ -1,5 +1,7 @@
 body {
   margin: 0;
+  color: #3a3e44;
+  font-size: 1rem;
   font-family: sans-serif;
 }
 
@@ -19,8 +21,8 @@ main {
 
 .main-header {
   height: 56px;
-  background-color: rgb(216, 187, 25);
-  padding: 0 40px;
+  background-color: #2d6a4f;
+  padding: 0 1.5rem;
 }
 
 .main-header__nav {
@@ -28,11 +30,10 @@ main {
 }
 
 .main-header__items {
-  margin: 0;
   list-style: none;
-  height: 100%;
-  vertical-align: middle;
+  margin: 0;
   padding: 0;
+  height: 100%;
   display: flex;
   align-items: center;
 }
@@ -43,11 +44,15 @@ main {
 
 .main-header__item a {
   text-decoration: none;
-  color: white;
+  padding: 0.25rem;
 }
 
 .main-header__item a:hover,
-.main-header__item a:active,
+.main-header__item a:visited {
+  color: #fff;
+}
+
 .main-header__item a.active {
-  color: #d10a0a;
+  border-radius: 5px;
+  box-shadow: 0 2px 0 0 #f3f3f3;
 }

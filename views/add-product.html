@@ -19,12 +19,19 @@
       </nav>
     </header>
     <main>
-      <form action="/admin/add-product" method="POST">
+      <form action="/admin/add-product" method="POST" class="product-form">
         <div class="form-group">
-          <label for="product-name" class="form-control">Product Name</label>
-          <input type="text" id="product-name" name="productName" class="form-control" />
+          <label for="product-name">Product Name</label>
+          <input
+            type="text"
+            id="product-name"
+            name="productName"
+            class="form-control"
+          />
         </div>
-        <button type="submit">Submit</button>
+        <div class="form-group row">
+          <button type="submit" class="button button--primary">Submit</button>
+        </div>
       </form>
     </main>
   </body>
