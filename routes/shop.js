@@ -8,7 +8,8 @@ routes.get('/', (req, res) => {
   res.render('shop', {
     prods: admin.products,
     pageTitle: 'Shop',
-    path: '/',
+    productCSS: true,
+    activeShop: true,
   });
 });
 
