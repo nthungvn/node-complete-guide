@@ -5,7 +5,7 @@ const admin = require('./admin');
 const routes = express.Router();
 
 routes.get('/', (req, res) => {
-  res.render('shop.pug', {
+  res.render('shop', {
     prods: admin.products,
     pageTitle: 'Shop',
     path: '/',
