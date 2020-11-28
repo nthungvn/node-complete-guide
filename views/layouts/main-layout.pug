@@ -11,9 +11,9 @@ html(lang="en")
       nav.main-header__nav
         ul.main-header__items
           li.main-header__item
-            a(href="/") Shop
+            a(href="/", class=(path === '/' ? 'active' : '')) Shop
           li.main-header__item
-            a(href="/admin/add-product") Add Product
+            a(href="/admin/add-product", class=(path === '/admin/add-product' ? 'active' : '')) Add Product
     body
       main
         block content
