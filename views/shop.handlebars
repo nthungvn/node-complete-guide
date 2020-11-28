@@ -1,6 +1,6 @@
 {{#if prods.length }}
-{{#each prods}}
 <div class="grid">
+  {{#each prods}}
   <article class="card product-item">
     <header class="card__header">
       <h1 class="product__title">{{this.productName}}</h1>
@@ -16,9 +16,8 @@
       <button class="btn">Add to Cart</button>
     </div>
   </article>
+  {{/each}}
 </div>
-{{/each}}
-{{/if}}
-{{#unless prods.length }}
+{{else}}
 <h1>No more products</h1>
-{{/unless}}
+{{/if}}
