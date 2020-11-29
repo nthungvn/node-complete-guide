@@ -41,17 +41,16 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
-  const { id, title, imageUrl, price, description } = req.body;
-  const product = new Product(id, title, imageUrl, price, description);
+  const { productId, title, imageUrl, price, description } = req.body;
+  const product = new Product(productId, title, imageUrl, price, description);
   product.save();
   res.redirect('/admin/products');
 };
 
 exports.postDeleteProduct = (req, res, next) => {
-  res.render('admin/add-product', {
-    pageTitle: 'Add Product',
-    path: '/admin/add-product',
-  });
+  const productId = req.body.productId;
+  Product.deleteById(productId);
+  res.redirect('/admin/products');
 };
 
 exports.postAddProduct = (req, res, next) => {

@@ -47,6 +47,27 @@ class Product {
     });
   }
 
+  static deleteById(id) {
+    readProductsFromFile((products) => {
+      const updatedProducts = [...products];
+      const existingProductIndex = updatedProducts.findIndex(
+        (product) => product.id === id,
+      );
+      if (existingProductIndex !== -1) {
+        updatedProducts.splice(existingProductIndex, 1);
+      }
+      fs.writeFile(
+        dataFileStorage,
+        JSON.stringify(updatedProducts),
+        (error) => {
+          if (error) {
+            console.log(error);
+          }
+        },
+      );
+    });
+  }
+
   static findById(id, cb) {
     readProductsFromFile((products) => {
       const product = products.find((item) => item.id === id);
