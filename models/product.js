@@ -33,8 +33,11 @@ class Product {
     });
   }
 
-  static findById(id) {
-    this.fetchAll()
+  static findById(id, cb) {
+    readProductsFromFile(products => {
+      const product = products.find(item => item.id === id);
+      cb(product);
+    });
   }
 
   static fetchAll(cb) {

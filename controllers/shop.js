@@ -28,10 +28,12 @@ exports.getProducts = (req, res) => {
  */
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-
-  res.render('shop/checkout', {
-    pageTitle: 'Checkout',
-    path: '/checkout',
+  Product.findById(productId, (product) => {
+    res.render('shop/product-detail', {
+      pageTitle: product.title,
+      path: '/products',
+      prod: product,
+    });
   });
 };
 
