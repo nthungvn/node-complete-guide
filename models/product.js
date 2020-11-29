@@ -23,6 +23,7 @@ class Product {
   }
 
   save() {
+    this.id = Math.random().toString();
     readProductsFromFile((products) => {
       const updatedProducts = [...products];
       updatedProducts.push(this);
@@ -30,6 +31,10 @@ class Product {
         console.log(error);
       });
     });
+  }
+
+  static findById(id) {
+    this.fetchAll()
   }
 
   static fetchAll(cb) {

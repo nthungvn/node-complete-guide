@@ -20,6 +20,21 @@ exports.getProducts = (req, res) => {
   });
 };
 
+/**
+ *
+ * @param {import('express-serve-static-core').Request} req
+ * @param {*} res
+ * @param {*} next
+ */
+exports.getProduct = (req, res, next) => {
+  const productId = req.params.productId;
+
+  res.render('shop/checkout', {
+    pageTitle: 'Checkout',
+    path: '/checkout',
+  });
+};
+
 exports.getCart = (req, res, next) => {
   res.render('shop/cart', {
     pageTitle: 'Cart',
