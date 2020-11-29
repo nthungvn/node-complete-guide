@@ -15,7 +15,7 @@ exports.getProducts = (req, res) => {
   Product.fetchAll((products) => {
     res.render('shop/product-list', {
       prods: products,
-      pageTitle: 'Shop',
+      pageTitle: 'Your Products',
       path: '/products',
     });
   });
@@ -40,7 +40,7 @@ exports.getProduct = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   res.render('shop/cart', {
-    pageTitle: 'Cart',
+    pageTitle: 'Your Cart',
     path: '/cart',
   });
 };
@@ -55,7 +55,7 @@ exports.postCart = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
-    pageTitle: 'Orders',
+    pageTitle: 'Your Orders',
     path: '/orders',
   });
 };
