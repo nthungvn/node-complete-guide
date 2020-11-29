@@ -45,6 +45,7 @@ main {
 .main-header__item a {
   text-decoration: none;
   padding: 0.25rem;
+  color: #fff;
 }
 
 .main-header__item a:hover,
