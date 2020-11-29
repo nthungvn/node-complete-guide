@@ -19,7 +19,10 @@
                 <p class="product__description">A very interesting book about so many even more interesting things!</p>
               </div>
               <div class="card__actions">
-                <button class="btn">Add to Cart</button>
+                <a class="btn" href="/admin/edit-product">Edit</a>
+                <form action="/admin/edit-product" method="POST">
+                  <button type="submit" class="btn">Delete</button>
+                </form>
               </div>
             </article>
           <% } %>

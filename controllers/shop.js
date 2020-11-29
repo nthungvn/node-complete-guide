@@ -1,4 +1,4 @@
-const Product = require("../models/product");
+const Product = require('../models/product');
 
 exports.getIndex = (req, res) => {
   Product.fetchAll((products) => {
@@ -35,6 +35,13 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.getCheckout = (req, res, next) => {
+  res.render('shop/checkout', {
+    pageTitle: 'Checkout',
+    path: '/checkout',
+  });
+};
+
+exports.postAddToCart = (req, res, next) => {
   res.render('shop/checkout', {
     pageTitle: 'Checkout',
     path: '/checkout',
