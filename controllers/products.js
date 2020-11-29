@@ -7,6 +7,13 @@ exports.getAddProduct = (req, res, next) => {
   });
 };
 
+exports.getAdminProducts = (req, res, next) => {
+  res.render('admin/products', {
+    pageTitle: 'Products',
+    path: '/admin/products',
+  });
+};
+
 exports.postAddProduct = (req, res, next) => {
   const product = new Product(req.body.title);
   product.save();
@@ -18,7 +25,7 @@ exports.getProducts = (req, res) => {
     res.render('shop/product-list', {
       prods: products,
       pageTitle: 'Shop',
-      path: '/',
+      path: '/products',
     });
   });
 };
