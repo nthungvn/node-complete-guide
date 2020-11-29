@@ -41,6 +41,41 @@ class Cart {
       });
     });
   }
+
+  static removeProduct(id, price) {
+    this.getCart((cart) => {
+      const existingProductIndex = cart.products.findIndex(
+        (product) => product.id === id,
+      );
+      const existingProduct = cart.products[existingProductIndex];
+      if (existingProduct) {
+        const updatedProducts = [...cart.products];
+        updatedProducts.splice(existingProductIndex, 1);
+        cart.products = updatedProducts;
+        cart.totalPrice = cart.totalPrice - +price * existingProduct.quantity;
+        fs.writeFile(dataFileStorage, JSON.stringify(cart), (error) => {
+          if (error) {
+            console.log(error);
+          }
+        });
+      }
+    });
+  }
+
+  static getCart(cb) {
+    fs.readFile(dataFileStorage, (error, fileContent) => {
+      let cart = {
+        products: [],
+        totalPrice: 0,
+      };
+
+      if (!error) {
+        cart = JSON.parse(fileContent);
+      }
+
+      cb(cart);
+    });
+  }
 }
 
 module.exports = Cart;

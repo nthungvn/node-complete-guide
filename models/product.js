@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const rootDir = require('../utils/path');
+const Cart = require('./cart');
 
 const dataFileStorage = path.join(rootDir, 'data', 'products.json');
 
@@ -53,18 +54,21 @@ class Product {
       const existingProductIndex = updatedProducts.findIndex(
         (product) => product.id === id,
       );
-      if (existingProductIndex !== -1) {
+      const existingProduct = updatedProducts[existingProductIndex];
+      if (existingProduct) {
         updatedProducts.splice(existingProductIndex, 1);
+        fs.writeFile(
+          dataFileStorage,
+          JSON.stringify(updatedProducts),
+          (error) => {
+            if (error) {
+              console.log(error);
+            } else {
+              Cart.removeProduct(id, existingProduct.price);
+            }
+          },
+        );
       }
-      fs.writeFile(
-        dataFileStorage,
-        JSON.stringify(updatedProducts),
-        (error) => {
-          if (error) {
-            console.log(error);
-          }
-        },
-      );
     });
   }
 
