@@ -7,6 +7,10 @@
       <ul>
         <% cartProductsData.forEach((cartProduct) => { %>
           <li><%= cartProduct.productData.title %> (<%= cartProduct.quantity %>)</li>
+          <form action="/delete-cart-item" method="POST">
+            <button type="submit" class="btn">Delete</button>
+            <input type="hidden" name="productId" value="<%= cartProduct.productData.id %>">
+          </form>
         <% }) %>
       </ul>
     </main>
