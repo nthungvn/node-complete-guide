@@ -40,9 +40,24 @@ exports.getProduct = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   Cart.getCart((cart) => {
-    res.render('shop/cart', {
-      pageTitle: 'Your Cart',
-      path: '/cart',
+    Product.fetchAll((products) => {
+      const cartProductsData = [];
+      for (let cartProduct of cart.products) {
+        const existingProduct = products.find(
+          (product) => product.id === cartProduct.id,
+        );
+        if (existingProduct) {
+          cartProductsData.push({
+            productData: existingProduct,
+            quantity: cartProduct.quantity,
+          });
+        }
+      }
+      res.render('shop/cart', {
+        pageTitle: 'Your Cart',
+        path: '/cart',
+        cartProductsData: cartProductsData,
+      });
     });
   });
 };

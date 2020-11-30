@@ -3,6 +3,11 @@
   <body>
     <%- include('../includes/nav.ejs') %>
     <main>
-      <h1>Cart page</h1>
+      <h1>Your Products</h1>
+      <ul>
+        <% cartProductsData.forEach((cartProduct) => { %>
+          <li><%= cartProduct.productData.title %> (<%= cartProduct.quantity %>)</li>
+        <% }) %>
+      </ul>
     </main>
 <%- include('../includes/end.ejs') %>
