@@ -19,7 +19,9 @@ class Product {
 
   static deleteById(id) {}
 
-  static findById(id) {}
+  static findById(id) {
+    return db.execute('SELECT * FROM products WHERE id=?', [id]);
+  }
 
   static fetchAll() {
     return db.execute('SELECT * FROM products');
