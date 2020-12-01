@@ -12,13 +12,18 @@ exports.getIndex = (req, res) => {
 };
 
 exports.getProducts = (req, res) => {
-  Product.fetchAll((products) => {
-    res.render('shop/product-list', {
-      prods: products,
-      pageTitle: 'Your Products',
-      path: '/products',
+  Product.fetchAll()
+    .then(([products, _]) => {
+      console.log(products);
+      res.render('shop/product-list', {
+        prods: products,
+        pageTitle: 'Your Products',
+        path: '/products',
+      });
+    })
+    .catch((error) => {
+      console.error(error);
     });
-  });
 };
 
 /**
