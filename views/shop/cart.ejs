@@ -3,15 +3,20 @@
   <body>
     <%- include('../includes/nav.ejs') %>
     <main>
-      <h1>Your products</h1>
-      <ul>
-        <% cartProductData.forEach((cartProduct) => { %>
-        <li><%= cartProduct.productData.title %> (<%= cartProduct.quantity %>)</li>
-        <form action="/delete-cart-item" method="POST">
-          <button type="submit" class="btn">Delete</button>
-          <input type="hidden" name="productId" value="<%= cartProduct.productData.id %>">
-        </form>
-        <% }); %>
-      </ul>
+      <% if (cartProductsData.length > 0) { %>
+        <ul>
+          <% cartProductsData.forEach((cartProduct) => { %>
+            <li>
+              <p><%= cartProduct.productData.title %> (<%= cartProduct.quantity %>)</p>
+              <form action="/delete-cart-item" method="POST">
+                <button type="submit" class="btn">Delete</button>
+                <input type="hidden" name="productId" value="<%= cartProduct.productData.id %>">
+              </form>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <h1>There is no products</h1>
+      <% } %>
     </main>
 <%- include('../includes/end.ejs') %>
