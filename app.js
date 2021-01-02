@@ -14,6 +14,15 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then((user) => {
+      req.user = user;
+    })
+    .finally(() => {
+      next();
+    });
+});
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/admin', adminRoutes);
@@ -27,8 +36,17 @@ Product.belongsTo(User, {
 User.hasMany(Product);
 
 sequelize
-  .sync({ force: true })
-  // .sync()
+  // .sync({ force: true })
+  .sync()
+  .then(() => {
+    return User.findByPk(1);
+  })
+  .then((user) => {
+    if (!user) {
+      return User.create({ name: 'John', email: 'john@example.com' });
+    }
+    return user;
+  })
   .then(() => {
     app.listen(process.env.PORT || 3000);
   })
