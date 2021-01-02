@@ -7,6 +7,8 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
 const sequelize = require('./utils/database');
+const Product = require('./models/product');
+const User = require('./models/user');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -18,8 +20,15 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(errorController.getNotFound);
 
+Product.belongsTo(User, {
+  constraints: true,
+  onDelete: 'CASCADE',
+});
+User.hasMany(Product);
+
 sequelize
-  .sync()
+  .sync({ force: true })
+  // .sync()
   .then(() => {
     app.listen(process.env.PORT || 3000);
   })
