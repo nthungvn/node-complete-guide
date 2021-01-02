@@ -2,8 +2,8 @@ const Cart = require('../models/cart');
 const Product = require('../models/product');
 
 exports.getIndex = (req, res) => {
-  Product.fetchAll()
-    .then(([products, _]) => {
+  Product.findAll()
+    .then((products) => {
       res.render('shop/index', {
         prods: products,
         pageTitle: 'Shop',
@@ -16,8 +16,8 @@ exports.getIndex = (req, res) => {
 };
 
 exports.getProducts = (req, res) => {
-  Product.fetchAll()
-    .then(([products, _]) => {
+  Product.findAll()
+    .then((products) => {
       res.render('shop/product-list', {
         prods: products,
         pageTitle: 'Your Products',
@@ -53,7 +53,7 @@ exports.getProduct = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   Cart.getCart((cart) => {
-    Product.fetchAll((products) => {
+    Product.findAll().then((products) => {
       const cartProductsData = [];
       for (let cartProduct of cart.products) {
         const existingProduct = products.find(
