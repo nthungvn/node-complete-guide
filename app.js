@@ -14,6 +14,8 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   User.findByPk(1)
     .then((user) => {
@@ -23,8 +25,6 @@ app.use((req, res, next) => {
       next();
     });
 });
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(errorController.getNotFound);

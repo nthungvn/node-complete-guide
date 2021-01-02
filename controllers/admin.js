@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll().then((products) => {
+  req.user.getProducts().then((products) => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Shop',
@@ -24,20 +24,29 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
 
-  const productId = req.params.productId;
+  const { productId } = req.params;
 
-  Product.findByPk(productId).then((product) => {
-    if (!product) {
-      return res.redirect('/');
-    }
+  req.user
+    .getProducts({
+      where: {
+        id: productId,
+      },
+    })
+    .then((products) => {
+      return products[0];
+    })
+    .then((product) => {
+      if (!product) {
+        return res.redirect('/');
+      }
 
-    res.render('admin/edit-product', {
-      pageTitle: 'Edit Product',
-      path: '/admin/edit-product',
-      editing: editMode,
-      product: product,
+      res.render('admin/edit-product', {
+        pageTitle: 'Edit Product',
+        path: '/admin/edit-product',
+        editing: editMode,
+        product: product,
+      });
     });
-  });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -60,7 +69,12 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.findByPk(productId)
+
+  req.user
+    .getProducts({ where: { id: productId } })
+    .then((products) => {
+      return products[0];
+    })
     .then((product) => {
       return product.destroy();
     })
@@ -71,9 +85,9 @@ exports.postDeleteProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, price, description } = req.body;
-  Product.create({ title, imageUrl, price, description })
+  req.user
+    .createProduct({ title, imageUrl, price, description })
     .then((result) => {
-      console.log(result);
       res.redirect('/admin/products');
     })
     .catch((error) => {
