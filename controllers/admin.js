@@ -61,7 +61,12 @@ exports.postDeleteProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, price, description } = req.body;
-  const product = new Product(null, title, imageUrl, price, description);
-  product.save();
-  res.redirect('/admin/products');
+  Product.create({ title, imageUrl, price, description })
+    .then((result) => {
+      console.log(result);
+      res.redirect('/admin/products');
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
