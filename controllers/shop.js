@@ -138,9 +138,11 @@ exports.getOrders = (req, res, next) => {
 
 exports.postOrder = (req, res, next) => {
   let cartProducts;
+  let fetchedCart;
   req.user
     .getCart()
     .then((cart) => {
+      fetchedCart = cart;
       return cart.getProducts();
     })
     .then((products) => {
@@ -148,20 +150,15 @@ exports.postOrder = (req, res, next) => {
       return req.user.createOrder();
     })
     .then((order) => {
-      for (let product of cartProducts) {
-        order
-          .addProduct(product, {
-            through: {
-              quantity: product.cartItem.quantity,
-            },
-          })
-          .then(() => {
-            product.cartItem.destroy();
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
+      return order.addProducts(
+        cartProducts.map((product) => {
+          product.orderItem = { quantity: product.cartItem.quantity };
+          return product;
+        }),
+      );
+    })
+    .then(() => {
+      return fetchedCart.setProducts(null);
     })
     .then(() => {
       res.redirect('/orders');
