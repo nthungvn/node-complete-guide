@@ -3,7 +3,7 @@
   </head>
   <body>
     <%- include('../includes/nav.ejs') %>
-    <main>
+    <main class="centered">
       <% if (products.length > 0) { %>
         <ul class="cart__item-list">
           <% products.forEach((product) => { %>
@@ -17,6 +17,9 @@
             </li>
           <% }) %>
         </ul>
+        <form action="/checkout" method="POST">
+          <button class="btn" type="submit">Checkout</button>
+        </form>
       <% } else { %>
         <h1>There is no products</h1>
       <% } %>

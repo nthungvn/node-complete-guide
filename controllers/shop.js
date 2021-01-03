@@ -134,3 +134,38 @@ exports.getCheckout = (req, res, next) => {
     path: '/checkout',
   });
 };
+
+exports.postCheckout = (req, res, next) => {
+  let cartProducts;
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart.getProducts();
+    })
+    .then((products) => {
+      cartProducts = products;
+      return req.user.createOrder();
+    })
+    .then((order) => {
+      for (let product of cartProducts) {
+        order
+          .addProduct(product, {
+            through: {
+              quantity: product.cartItem.quantity,
+            },
+          })
+          .then(() => {
+            product.cartItem.destroy();
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    })
+    .then(() => {
+      res.redirect('/orders');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
