@@ -122,10 +122,18 @@ exports.postDeleteCartItem = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  res.render('shop/orders', {
-    pageTitle: 'Your Orders',
-    path: '/orders',
-  });
+  req.user
+    .getOrders({ include: 'products' })
+    .then((orders) => {
+      res.render('shop/orders', {
+        pageTitle: 'Your Orders',
+        path: '/orders',
+        orders: orders,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getCheckout = (req, res, next) => {
@@ -135,7 +143,7 @@ exports.getCheckout = (req, res, next) => {
   });
 };
 
-exports.postCreateOrder = (req, res, next) => {
+exports.postOrder = (req, res, next) => {
   let cartProducts;
   req.user
     .getCart()
