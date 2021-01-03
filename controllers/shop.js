@@ -135,7 +135,7 @@ exports.getCheckout = (req, res, next) => {
   });
 };
 
-exports.postCheckout = (req, res, next) => {
+exports.postCreateOrder = (req, res, next) => {
   let cartProducts;
   req.user
     .getCart()
