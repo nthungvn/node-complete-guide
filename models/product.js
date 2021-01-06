@@ -33,6 +33,18 @@ class Product {
         console.log(error);
       });
   }
+
+  static fetchOne(productId) {
+    return getDb()
+      .collection('products')
+      .findOne({ _id: productId })
+      .then((product) => {
+        return product;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 }
 
 module.exports = Product;
