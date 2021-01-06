@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 // const adminRoutes = require('./routes/admin');
 // const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
-const connectMongo = require('./utils/database');
+const { connectMongo } = require('./utils/database');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -21,11 +21,7 @@ app.use((req, res, next) => {
 // app.use(shopRoutes);
 app.use(errorController.getNotFound);
 
-connectMongo()
-  .then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(process.env.PORT || 3000);
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+connectMongo(() => {
+  console.log('Connected to MongoDB');
+  app.listen(process.env.PORT || 3000);
+});
