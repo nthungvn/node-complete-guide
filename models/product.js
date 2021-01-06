@@ -14,6 +14,7 @@ class Product {
       .insertOne(this)
       .then((result) => {
         console.log(result);
+        return result;
       })
       .catch((error) => {
         console.log(error);
