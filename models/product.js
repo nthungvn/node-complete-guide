@@ -46,6 +46,19 @@ class Product {
         console.log(error);
       });
   }
+
+  static deleteOne(productId) {
+    return getDb()
+      .collection('products')
+      .findOneAndDelete({ _id: { $eq: ObjectId(productId) } })
+      .then((result) => {
+        console.log(result);
+        return result;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 }
 
 module.exports = Product;
