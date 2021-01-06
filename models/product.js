@@ -20,6 +20,19 @@ class Product {
         console.log(error);
       });
   }
+
+  static fetchAll() {
+    return getDb()
+      .collection('products')
+      .find()
+      .toArray()
+      .then((products) => {
+        return products;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 }
 
 module.exports = Product;
