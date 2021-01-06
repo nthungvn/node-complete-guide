@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const { getDb } = require('../utils/database');
 
 class Product {
@@ -37,7 +38,7 @@ class Product {
   static fetchOne(productId) {
     return getDb()
       .collection('products')
-      .findOne({ _id: productId })
+      .findOne({ _id: { $eq: ObjectId(productId) } })
       .then((product) => {
         return product;
       })
