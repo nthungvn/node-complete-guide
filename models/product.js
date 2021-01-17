@@ -47,6 +47,29 @@ class Product {
       });
   }
 
+  static updateOne(productId, updatedProduct) {
+    return getDb()
+      .collection('products')
+      .updateOne(
+        { _id: { $eq: ObjectId(productId) } },
+        {
+          $set: {
+            title: updatedProduct.title,
+            imageUrl: updatedProduct.imageUrl,
+            description: updatedProduct.description,
+            price: updatedProduct.price,
+          },
+        },
+      )
+      .then((result) => {
+        console.log(result);
+        return result;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   static deleteOne(productId) {
     return getDb()
       .collection('products')
