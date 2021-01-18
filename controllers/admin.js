@@ -43,11 +43,15 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { productId, title, imageUrl, price, description } = req.body;
-  Product.fetchOne(productId)
-    .then((product) => {
-      const updatedProduct = new Product(title, imageUrl, price, description);
-      return Product.updateOne(productId, updatedProduct);
-    })
+  const updatedProduct = new Product(
+    title,
+    imageUrl,
+    price,
+    description,
+    productId,
+  );
+  updatedProduct
+    .save()
     .then(() => {
       res.redirect('/admin/products');
     })
