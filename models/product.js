@@ -38,7 +38,7 @@ class Product {
   static fetchOne(productId) {
     return getDb()
       .collection('products')
-      .findOne({ _id: { $eq: ObjectId(productId) } })
+      .findOne({ _id: { $eq: new ObjectId(productId) } })
       .then((product) => {
         return product;
       })
@@ -51,15 +51,8 @@ class Product {
     return getDb()
       .collection('products')
       .updateOne(
-        { _id: { $eq: ObjectId(productId) } },
-        {
-          $set: {
-            title: updatedProduct.title,
-            imageUrl: updatedProduct.imageUrl,
-            description: updatedProduct.description,
-            price: updatedProduct.price,
-          },
-        },
+        { _id: { $eq: new ObjectId(productId) } },
+        { $set: updatedProduct },
       )
       .then((result) => {
         console.log(result);
@@ -73,7 +66,7 @@ class Product {
   static deleteOne(productId) {
     return getDb()
       .collection('products')
-      .findOneAndDelete({ _id: { $eq: ObjectId(productId) } })
+      .findOneAndDelete({ _id: { $eq: new ObjectId(productId) } })
       .then((result) => {
         console.log(result);
         return result;
