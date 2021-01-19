@@ -7,10 +7,8 @@ class Product {
     this.imageUrl = imageUrl;
     this.price = price;
     this.description = description;
-    if (id) {
-      this._id = new ObjectId(id);
-    }
-  }
+    this._id = id && new ObjectId(id);
+}
 
   save() {
     if (this._id) {
