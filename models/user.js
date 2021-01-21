@@ -42,6 +42,16 @@ class User {
       .updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
   }
 
+  removeOutCart(productId) {
+    const updatedCartItems = this.cart.items.filter(
+      (item) => item.productId.toString() !== productId,
+    );
+    const updatedCart = { items: updatedCartItems };
+    return getDb()
+      .collection('users')
+      .updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
+  }
+
   getCart() {
     const productIds = this.cart.items.map((item) => item.productId);
     return getDb()
