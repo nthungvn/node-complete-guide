@@ -50,15 +50,13 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  req.user
-    .getCart()
-    .then((products) => {
-      res.render('shop/cart', {
-        pageTitle: 'Your Cart',
-        path: '/cart',
-        products: products,
-      });
+  req.user.getCart().then((products) => {
+    res.render('shop/cart', {
+      pageTitle: 'Your Cart',
+      path: '/cart',
+      products: products,
     });
+  });
 };
 
 exports.postCart = (req, res, next) => {
@@ -73,31 +71,6 @@ exports.postCart = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-  // let fetchedCart;
-  // let newQuantity = 1;
-  // req.user
-  //   .getCart()
-  //   .then((cart) => {
-  //     fetchedCart = cart;
-  //     return fetchedCart.getProducts({ where: { id: productId } });
-  //   })
-  //   .then((products) => {
-  //     let product;
-  //     if (products.length > 0) {
-  //       product = products[0];
-  //       newQuantity = product.cartItem.quantity + 1;
-  //       return product;
-  //     }
-  //     return Product.findByPk(productId);
-  //   })
-  //   .then((product) => {
-  //     return fetchedCart.addProduct(product, {
-  //       through: {
-  //         quantity: newQuantity,
-  //       },
-  //     });
-  //   })
-
 };
 
 exports.postDeleteCartItem = (req, res, next) => {
