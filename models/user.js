@@ -26,7 +26,7 @@ class User {
     const updatedCart = {
       items: [
         {
-          productId: product.id,
+          productId: product._id,
           quantity: 1,
         },
       ],
@@ -34,6 +34,27 @@ class User {
     return getDb()
       .collection('users')
       .updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
+  }
+
+  getCart() {
+    const productIds = this.cart.items.map((item) => item.productId);
+    return getDb()
+      .collection('products')
+      .find({ _id: { $in: productIds } })
+      .toArray()
+      .then((products) => {
+        return products.map((product) => {
+          return {
+            ...product,
+            quantity: this.cart.items.find(
+              (item) => item.productId.toString() === product._id.toString(),
+            ).quantity,
+          };
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   static findById(id) {
