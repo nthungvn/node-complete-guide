@@ -87,7 +87,7 @@ exports.postDeleteCartItem = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({ include: 'products' })
+    .getOrders()
     .then((orders) => {
       res.render('shop/orders', {
         pageTitle: 'Your Orders',
@@ -101,8 +101,6 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let cartProducts;
-  let fetchedCart;
   req.user
     .addOrder()
     .then(() => {
