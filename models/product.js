@@ -1,12 +1,16 @@
-// const { ObjectId } = require('mongodb');
-// const { getDb } = require('../utils/database');
+const mongoose = require('mongoose');
+
+const productSchema = new mongoose.Schema({
+  title: String,
+  imageUrl: String,
+  price: Number,
+  description: String,
+});
+
+const Product = mongoose.model('Product', productSchema);
 
 // class Product {
 //   constructor(title, imageUrl, price, description, id, userId) {
-//     this.title = title;
-//     this.imageUrl = imageUrl;
-//     this.price = price;
-//     this.description = description;
 //     this._id = id && new ObjectId(id);
 //     this.userId = userId;
 // }
@@ -75,4 +79,4 @@
 //   }
 // }
 
-// module.exports = Product;
+module.exports = Product;
