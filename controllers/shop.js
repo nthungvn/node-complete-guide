@@ -36,7 +36,7 @@ exports.getProducts = (req, res) => {
  */
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-  Product.fetchOne(productId)
+  Product.findById(productId)
     .then((product) => {
       res.render('shop/product-detail', {
         pageTitle: product.title,
@@ -61,7 +61,7 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
-  Product.fetchOne(productId)
+  Product.findById(productId)
     .then((product) => {
       req.user.addToCart(product);
     })

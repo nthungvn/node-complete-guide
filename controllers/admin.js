@@ -26,7 +26,7 @@ exports.getEditProduct = (req, res, next) => {
 
   const { productId } = req.params;
 
-  Product.fetchOne(productId)
+  Product.findById(productId)
     .then((product) => {
       if (!product) {
         return res.redirect('/');
