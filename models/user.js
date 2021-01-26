@@ -74,31 +74,19 @@ class User {
   }
 
   addOrder() {
-    const productIds = this.cart.items.map((item) => item.productId);
-    return getDb()
-      .collection('products')
-      .find({ _id: { $in: productIds } })
-      .toArray()
-      .then((products) => {
-        return products.map((product) => {
-          return {
-            ...product,
-            quantity: this.cart.items.find(
-              (item) => item.productId.toString() === product._id.toString(),
-            ).quantity,
-          };
-        });
+    return this.getCart()
+      .then((products) => ({
+        userId: this._id,
+        products: products,
+      }))
+      .then((order) => {
+        return getDb().collection('orders').insertOne(order);
       })
-      .then((products) => {
+      .then(() => {
+        this.cart.items = [];
         return getDb()
-          .collection('orders')
-          .insertOne({ userId: this._id, products: products })
-          .then(() => {
-            this.cart.items = [];
-            return getDb()
-              .collection('users')
-              .updateOne({ _id: this._id }, { $set: { cart: { items: [] } } });
-          });
+          .collection('users')
+          .updateOne({ _id: this._id }, { $set: { cart: { items: [] } } });
       })
       .catch((error) => {
         console.log(error);
