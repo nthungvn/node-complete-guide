@@ -40,7 +40,7 @@ mongoose
   )
   .then(() => {
     console.log('Connected to MongoDB');
-    return User.findOne({ _id: ObjectId('6006fc24e95f4b367ac6b10a') })
+    return User.findById('6006fc24e95f4b367ac6b10a')
       .then((user) => {
         if (!user) {
           const user = new User('Hung', 'hung@sample.com');
