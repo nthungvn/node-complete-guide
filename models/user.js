@@ -9,22 +9,8 @@ const User = mongoose.model('User', userSchema);
 
 // class User {
 //   constructor(name, email, cart, id) {
-//     this.name = name;
-//     this.email = email;
 //     this.cart = cart;
 //     this._id = id;
-//   }
-
-//   save() {
-//     return getDb()
-//       .collection('users')
-//       .insertOne(this)
-//       .then((result) => {
-//         return result;
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       });
 //   }
 
 //   addToCart(product) {
