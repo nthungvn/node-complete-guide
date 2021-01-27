@@ -2,7 +2,11 @@ const { ObjectId } = require('mongodb');
 const Product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({
+    userId: {
+      $eq: req.user._id,
+    },
+  })
     .exec()
     .then((products) => {
       res.render('admin/products', {
