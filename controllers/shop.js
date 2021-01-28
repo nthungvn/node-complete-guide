@@ -63,10 +63,7 @@ exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
   Product.findById(productId)
     .then((product) => {
-      const updatedCartItems = [...req.user.cart.items];
-      updatedCartItems.push({ productId: product, quantity: 1 });
-      req.user.cart.items = updatedCartItems;
-      return req.user.save();
+      return req.user.addToCart(product);
     })
     .then(() => {
       res.redirect('/cart');

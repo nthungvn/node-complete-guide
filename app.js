@@ -43,7 +43,11 @@ mongoose
     return User.findById('6006fc24e95f4b367ac6b10a')
       .then((user) => {
         if (!user) {
-          const user = new User('Hung', 'hung@sample.com');
+          const user = new User({
+            name: 'Hung',
+            email: 'hung@sample.com',
+            cart: { items: [] },
+          });
           return user.save();
         }
         return user;
