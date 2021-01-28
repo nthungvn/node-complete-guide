@@ -49,6 +49,7 @@ userSchema.methods.getCart = function () {
     .then((products) => {
       return products.map((product) => {
         return {
+          _id: product._id,
           title: product.title,
           price: product.price,
           imageUrl: product.imageUrl,
@@ -64,21 +65,18 @@ userSchema.methods.getCart = function () {
     });
 };
 
+userSchema.methods.removeOutCart = function (productId) {
+  const updatedCartItems = this.cart.items.filter(
+    (item) => item.productId.toString() !== productId,
+  );
+  const updatedCart = { items: updatedCartItems };
+  this.cart = updatedCart;
+  return this.save();
+};
+
 const User = mongoose.model('User', userSchema);
 
 // class User {
-//   removeOutCart(productId) {
-//     const updatedCartItems = this.cart.items.filter(
-//       (item) => item.productId.toString() !== productId,
-//     );
-//     const updatedCart = { items: updatedCartItems };
-//     return getDb()
-//       .collection('users')
-//       .updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
-//   }
-
-
-
 //   addOrder() {
 //     return this.getCart()
 //       .then((products) => ({
@@ -106,18 +104,6 @@ const User = mongoose.model('User', userSchema);
 //       .toArray()
 //       .then((orders) => {
 //         return orders;
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       });
-//   }
-
-//   static findById(id) {
-//     return getDb()
-//       .collection('users')
-//       .findOne({ _id: new ObjectId(id) })
-//       .then((result) => {
-//         return result;
 //       })
 //       .catch((error) => {
 //         console.log(error);
