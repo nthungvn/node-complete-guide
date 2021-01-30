@@ -45,20 +45,12 @@ userSchema.methods.addToCart = function (product) {
 
 userSchema.methods.getCart = function () {
   const productIds = this.cart.items.map((item) => item.productId);
-  return Product.find({ _id: { $in: productIds } })
-    .then((products) => {
-      return products.map((product) => {
-        return {
-          _id: product._id,
-          title: product.title,
-          price: product.price,
-          imageUrl: product.imageUrl,
-          description: product.description,
-          quantity: this.cart.items.find(
-            (item) => item.productId.toString() === product._id.toString(),
-          ).quantity,
-        };
-      });
+  return this.cart
+    .populate('items.productId')
+    .execPopulate()
+    .then((cart) => {
+      console.log(cart.items);
+      return cart.items;
     })
     .catch((error) => {
       console.error(error);
