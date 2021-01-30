@@ -69,9 +69,11 @@ userSchema.methods.removeOutCart = function (productId) {
 userSchema.methods.addOrder = function () {
   return this.getCart()
     .then((products) => ({
+      userId: this._id,
       name: this.name,
       email: this.email,
       products: products.map((product) => ({
+        productId: product.productId._id,
         title: product.productId.title,
         imageUrl: product.productId.imageUrl,
         price: product.productId.price,
@@ -91,21 +93,15 @@ userSchema.methods.addOrder = function () {
     });
 };
 
+userSchema.methods.getOrders = function () {
+  return Order.find({ userId: this._id })
+    .then((orders) => {
+      return orders;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 const User = mongoose.model('User', userSchema);
-
-// class User {
-//   getOrders() {
-//     return getDb()
-//       .collection('orders')
-//       .find({ userId: this._id })
-//       .toArray()
-//       .then((orders) => {
-//         return orders;
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       });
-//   }
-// }
-
 module.exports = User;

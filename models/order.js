@@ -1,8 +1,13 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 const Product = require('./product');
 const User = require('./user');
 
 const orderSchema = new mongoose.Schema({
+  userId: {
+    type: ObjectId,
+    required: true,
+  },
   name: {
     type: 'String',
     required: true,
@@ -13,6 +18,10 @@ const orderSchema = new mongoose.Schema({
   },
   products: [
     {
+      productId: {
+        type: ObjectId,
+        required: true,
+      },
       title: {
         type: String,
         required: true,
