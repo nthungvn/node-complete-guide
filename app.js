@@ -2,7 +2,6 @@ const path = require('path');
 const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { ObjectId } = require('mongodb');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');

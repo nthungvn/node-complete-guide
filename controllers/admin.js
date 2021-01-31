@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongodb');
 const Product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
