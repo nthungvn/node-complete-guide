@@ -1,6 +1,4 @@
 const getLogin = (req, res, next) => {
-  console.log(req.get('Cookie'));
-  req.isLoggedIn = req.get('Cookie').split(';')[0].trim().split('=')[1] === 'true';
   res.render('auth/login', {
     pageTitle: 'Login',
     path: '/login',
