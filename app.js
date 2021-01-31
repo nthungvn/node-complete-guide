@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -10,7 +11,15 @@ const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
+const MONGODB_URI =
+  'mongodb+srv://node-complete-guide:node-complete-guide@cluster0.oipin.mongodb.net/node-complete-guide?retryWrites=true&w=majority';
+
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions',
+});
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -31,6 +40,7 @@ app.use(
     secret: 'my secret',
     resave: false,
     saveUninitialized: false,
+    store: store,
   }),
 );
 app.use('/admin', adminRoutes);
@@ -39,13 +49,10 @@ app.use(authRoutes);
 app.use(errorController.getNotFound);
 
 mongoose
-  .connect(
-    'mongodb+srv://node-complete-guide:node-complete-guide@cluster0.oipin.mongodb.net/node-complete-guide?retryWrites=true&w=majority',
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    },
-  )
+  .connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log('Connected to MongoDB');
     return User.findById('6006fc24e95f4b367ac6b10a')
