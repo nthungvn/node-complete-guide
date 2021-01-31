@@ -1,0 +1,23 @@
+<%- include('../includes/head') %>
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/auth.css">
+  </head>
+  <body>
+    <%- include('../includes/nav.ejs') %>
+    <main>
+      <form class="login-form" action="/login" method="POST">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" class="form-control" name="username" type="text">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" class="form-control" name="password" type="password">
+        </div>
+        <div class="form-group row">
+          <input class="button button--primary" type="submit" value="Login">
+        </div>
+      </form>
+    </main>
+  </body>
+<%- include('../includes/end') %>
