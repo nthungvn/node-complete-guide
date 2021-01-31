@@ -1,4 +1,5 @@
 const getLogin = (req, res, next) => {
+  console.log(req.session.isLoggedIn);
   res.render('auth/login', {
     pageTitle: 'Login',
     path: '/login',
@@ -14,7 +15,7 @@ const getLogin = (req, res, next) => {
 const postLogin = (req, res, next) => {
   const {username, password} = req.body;
   console.log(username, password);
-  res.setHeader('Set-Cookie', 'isLoggedIn=true; Max-Age=31536');
+  req.session.isLoggedIn = true;
   res.redirect('/');
 };
 

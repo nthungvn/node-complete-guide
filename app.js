@@ -2,6 +2,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -25,15 +26,13 @@ app.use((req, res, next) => {
       console.log(err);
     });
 });
-app.use((req, res, next) => {
-  const cookie = req.get('Cookie');
-  const isLoggedInCookie = cookie && cookie.split(';')[0];
-  req.isLoggedIn = isLoggedInCookie && isLoggedInCookie.trim().split('=')[1] === 'true';
-  if (!req.isLoggedIn && req.url.includes('admin')) {
-    res.redirect('/login');
-  }
-  next();
-});
+app.use(
+  session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
