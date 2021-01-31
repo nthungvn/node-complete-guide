@@ -3,7 +3,7 @@ const Product = require('../models/product');
 exports.getProducts = (req, res, next) => {
   Product.find({
     userId: {
-      $eq: req.user._id,
+      $eq: req.session.user._id,
     },
   })
     .exec()
@@ -83,7 +83,7 @@ exports.postDeleteProduct = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, price, description } = req.body;
 
-  Product.create({ title, imageUrl, price, description, userId: req.user })
+  Product.create({ title, imageUrl, price, description, userId: req.session.user })
     .then((result) => {
       console.log(result);
       res.redirect('/admin/products');

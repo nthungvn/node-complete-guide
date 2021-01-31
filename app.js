@@ -25,16 +25,6 @@ app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use((req, res, next) => {
-  User.findById('6006fc24e95f4b367ac6b10a')
-    .then((user) => {
-      req.user = user;
-      next();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
 app.use(
   session({
     secret: 'my secret',
