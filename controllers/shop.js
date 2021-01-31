@@ -1,3 +1,4 @@
+const Order = require('../models/order');
 const Product = require('../models/product');
 
 exports.getIndex = (req, res) => {
@@ -86,8 +87,7 @@ exports.postDeleteCartItem = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders()
+  Order.find({ userId: req.user._id })
     .then((orders) => {
       res.render('shop/orders', {
         pageTitle: 'Your Orders',
