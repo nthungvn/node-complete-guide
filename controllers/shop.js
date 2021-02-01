@@ -55,27 +55,22 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  User.findOne({ _id: req.session.user._id })
-    .then((user) => user.getCart())
-    .then((products) => {
-      res.render('shop/cart', {
-        pageTitle: 'Your Cart',
-        path: '/cart',
-        products: products,
-        isAuthenticated: req.session.isLoggedIn,
-      });
+  req.user.getCart().then((products) => {
+    res.render('shop/cart', {
+      pageTitle: 'Your Cart',
+      path: '/cart',
+      products: products,
+      isAuthenticated: req.session.isLoggedIn,
     });
+  });
 };
 
 exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
-  let fetchedProduct;
   Product.findById(productId)
     .then((product) => {
-      fetchedProduct = product;
-      return User.findOne({ _id: req.session.user._id });
+      return req.user.addToCart(product);
     })
-    .then((user) => user.addToCart(fetchedProduct))
     .then(() => {
       res.redirect('/cart');
     })
@@ -86,8 +81,8 @@ exports.postCart = (req, res, next) => {
 
 exports.postDeleteCartItem = (req, res, next) => {
   const productId = req.body.productId;
-  User.findOne({ _id: req.session.user._id })
-    .then((user) => user.removeOutCart(productId))
+  req.user
+    .removeOutCart(productId)
     .then(() => {
       res.redirect('/cart');
     })
@@ -112,8 +107,8 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  User.findOne({ _id: req.session.user._id })
-    .then((user) => user.addOrder())
+  req.user
+    .addOrder()
     .then(() => {
       res.redirect('/orders');
     })
