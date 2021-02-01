@@ -21,7 +21,10 @@ const postLogin = (req, res, next) => {
     .then((user) => {
       req.session.isLoggedIn = true;
       req.session.user = user;
-      res.redirect('/');
+      req.session.save((error) => {
+        console.log(error);
+        res.redirect('/');
+      });
     })
     .catch((err) => {
       console.log(err);
