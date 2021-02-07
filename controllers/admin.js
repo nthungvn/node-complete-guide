@@ -85,7 +85,6 @@ exports.postAddProduct = (req, res, next) => {
 
   Product.create({ title, imageUrl, price, description, userId: req.session.user })
     .then((result) => {
-      console.log(result);
       res.redirect('/admin/products');
     })
     .catch((error) => {

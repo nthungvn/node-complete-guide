@@ -15,7 +15,6 @@ const getLogin = (req, res, next) => {
  */
 const postLogin = (req, res, next) => {
   const { username, password } = req.body;
-  console.log(username, password);
   User.findById('6006fc24e95f4b367ac6b10a')
     .then((user) => {
       req.session.isLoggedIn = true;

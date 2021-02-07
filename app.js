@@ -69,7 +69,6 @@ mongoose
         return user;
       })
       .then((user) => {
-        console.log(user);
         app.listen(process.env.PORT || 3000);
       });
   })

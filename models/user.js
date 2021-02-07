@@ -48,7 +48,6 @@ userSchema.methods.getCart = function () {
     .populate('items.productId')
     .execPopulate()
     .then((cart) => {
-      console.log(cart.items);
       return cart.items;
     })
     .catch((error) => {
