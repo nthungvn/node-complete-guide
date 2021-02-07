@@ -61,21 +61,27 @@ const getSignup = (req, res, next) => {
 const postSignup = (req, res, next) => {
   const { email, password, confirmPassword } = req.body;
 
-  bcrypt
-    .genSalt()
-    .then((salted) => {
-      return bcrypt.hash(password, salted);
-    })
-    .then((hashPassword) => {
-      const user = new User({
-        email,
-        password: hashPassword,
-        cart: { items: [] },
-      });
-      return user.save();
-    })
-    .then(() => {
-      res.redirect('/login');
+  User.findOne({ email: email })
+    .then((user) => {
+      if (user) {
+        return res.redirect('/signup');
+      }
+      bcrypt
+        .genSalt()
+        .then((salted) => {
+          return bcrypt.hash(password, salted);
+        })
+        .then((hashPassword) => {
+          const user = new User({
+            email,
+            password: hashPassword,
+            cart: { items: [] },
+          });
+          return user.save();
+        })
+        .then(() => {
+          res.redirect('/login');
+        });
     })
     .catch((error) => console.log(error));
 };

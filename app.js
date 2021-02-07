@@ -56,21 +56,7 @@ mongoose
   })
   .then(() => {
     console.log('Connected to MongoDB');
-    return User.findById('6006fc24e95f4b367ac6b10a')
-      .then((user) => {
-        if (!user) {
-          const user = new User({
-            name: 'Hung',
-            email: 'hung@sample.com',
-            cart: { items: [] },
-          });
-          return user.save();
-        }
-        return user;
-      })
-      .then((user) => {
-        app.listen(process.env.PORT || 3000);
-      });
+    app.listen(process.env.PORT || 3000);
   })
   .catch((err) => {
     console.log(err);
