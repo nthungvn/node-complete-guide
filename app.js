@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const csrf = require('csurf');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
 const adminRoutes = require('./routes/admin');
@@ -33,6 +34,8 @@ app.use(
     store: store,
   }),
 );
+const csrfProtection = csrf();
+
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
@@ -44,6 +47,7 @@ app.use((req, res, next) => {
     })
     .catch((error) => console.log(error));
 });
+app.use(csrfProtection);
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);

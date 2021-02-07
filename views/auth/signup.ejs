@@ -19,6 +19,7 @@
           <input id="confirmPassword" class="form-control" name="confirmPassword" type="confirmPassword">
         </div>
         <div class="form-group row">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <input class="button button--primary" type="submit" value="Signup">
         </div>
       </form>
