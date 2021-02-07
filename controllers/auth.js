@@ -15,14 +15,25 @@ const getLogin = (req, res, next) => {
  * @param {import("express").NextFunction} next
  */
 const postLogin = (req, res, next) => {
-  const { username, password } = req.body;
-  User.findById('6006fc24e95f4b367ac6b10a')
+  const { email, password } = req.body;
+  User.findOne({ email: email })
     .then((user) => {
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      req.session.save((error) => {
-        console.log(error);
-        res.redirect('/');
+      if (!user) {
+        return res.redirect('/login');
+      }
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          return res.redirect('/login');
+        }
+        req.session.isLoggedIn = true;
+        req.session.user = user;
+        req.session.save((error) => {
+          if (error) {
+            console.log(error);
+            return res.redirect('/login');
+          }
+          res.redirect('/');
+        });
       });
     })
     .catch((err) => {
@@ -32,7 +43,9 @@ const postLogin = (req, res, next) => {
 
 const postLogout = (req, res, next) => {
   req.session.destroy((error) => {
-    console.log(error);
+    if (error) {
+      console.log(error);
+    }
     res.redirect('/');
   });
 };
