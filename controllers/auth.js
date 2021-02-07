@@ -4,7 +4,7 @@ const getLogin = (req, res, next) => {
   res.render('auth/login', {
     pageTitle: 'Login',
     path: '/login',
-    isAuthenticated: req.session.isLoggedIn,
+    isAuthenticated: false,
   });
 };
 
@@ -40,7 +40,7 @@ const getSignup = (req, res, next) => {
   res.render('auth/signup', {
     pageTitle: 'Signup',
     path: '/signup',
-    isAuthenticated: req.session.isLoggedIn,
+    isAuthenticated: false,
   });
 };
 
