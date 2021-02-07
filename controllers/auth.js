@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require('../models/user');
 
 const getLogin = (req, res, next) => {
   res.render('auth/login', {
@@ -45,7 +45,20 @@ const getSignup = (req, res, next) => {
 };
 
 const postSignup = (req, res, next) => {
+  const { email, password, confirmPassword } = req.body;
 
+  const user = new User({
+    email: email,
+    password: password,
+    cart: { items: [] },
+  });
+
+  user
+    .save()
+    .then(() => {
+      res.redirect('/login');
+    })
+    .catch((error) => console.log(error));
 };
 
 exports.getLogin = getLogin;
