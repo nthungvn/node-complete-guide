@@ -11,6 +11,7 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
+const renderAttachedInfo = require('./middleware/renderAttachedInfo');
 
 const MONGODB_URI =
   'mongodb+srv://node-complete-guide:node-complete-guide@cluster0.oipin.mongodb.net/node-complete-guide?retryWrites=true&w=majority';
@@ -48,6 +49,7 @@ app.use((req, res, next) => {
     .catch((error) => console.log(error));
 });
 app.use(csrfProtection);
+app.use(renderAttachedInfo);
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
