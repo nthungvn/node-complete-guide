@@ -12,6 +12,7 @@ const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 const renderAttachedInfo = require('./middleware/renderAttachedInfo');
+const loggedInUser = require('./middleware/loggedInUser');
 
 const MONGODB_URI =
   'mongodb+srv://node-complete-guide:node-complete-guide@cluster0.oipin.mongodb.net/node-complete-guide?retryWrites=true&w=majority';
@@ -37,17 +38,7 @@ app.use(
 );
 const csrfProtection = csrf();
 
-app.use((req, res, next) => {
-  if (!req.session.user) {
-    return next();
-  }
-  User.findById(req.session.user._id)
-    .then((user) => {
-      req.user = user;
-      next();
-    })
-    .catch((error) => console.log(error));
-});
+app.use(loggedInUser);
 app.use(csrfProtection);
 app.use(renderAttachedInfo);
 app.use('/admin', adminRoutes);
