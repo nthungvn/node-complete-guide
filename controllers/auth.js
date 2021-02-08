@@ -5,6 +5,7 @@ const getLogin = (req, res, next) => {
   res.render('auth/login', {
     pageTitle: 'Login',
     path: '/login',
+    errorMessage: req.flash('errorMessage')[0],
   });
 };
 
@@ -18,10 +19,12 @@ const postLogin = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
+        req.flash('errorMessage', 'Incorrect email or password');
         return res.redirect('/login');
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
+          req.flash('errorMessage', 'Incorrect email or password');
           return res.redirect('/login');
         }
         req.session.isLoggedIn = true;
@@ -36,6 +39,7 @@ const postLogin = (req, res, next) => {
       });
     })
     .catch((err) => {
+      req.flash('errorMessage', 'Incorrect email or password');
       return res.redirect('/login');
     });
 };
@@ -53,6 +57,7 @@ const getSignup = (req, res, next) => {
   res.render('auth/signup', {
     pageTitle: 'Signup',
     path: '/signup',
+    errorMessage: req.flash('errorMessage')[0],
   });
 };
 
@@ -62,6 +67,7 @@ const postSignup = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (user) {
+        req.flash('errorMessage', 'The email already existed');
         return res.redirect('/signup');
       }
       bcrypt

@@ -4,13 +4,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const csrf = require('csurf');
+const flash = require('connect-flash')();
 const MongoDBStore = require('connect-mongodb-session')(session);
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
-const User = require('./models/user');
 const renderAttachedInfo = require('./middleware/renderAttachedInfo');
 const loggedInUser = require('./middleware/loggedInUser');
 
@@ -40,6 +40,7 @@ const csrfProtection = csrf();
 
 app.use(loggedInUser);
 app.use(csrfProtection);
+app.use(flash);
 app.use(renderAttachedInfo);
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
