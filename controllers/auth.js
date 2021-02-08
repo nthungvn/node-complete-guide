@@ -1,14 +1,16 @@
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
-const sendgridTransport = required('nodemailer-sendgrid-transport');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 const User = require('../models/user');
 
-const transporter = nodemailer.createTransport(sendgridTransport({
-  auth: {
-    api_key: process.env.SENDGRID_API_KEY,
-  }
-}))
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key: process.env.SENDGRID_API_KEY,
+    },
+  }),
+);
 
 const getLogin = (req, res, next) => {
   res.render('auth/login', {
@@ -98,6 +100,7 @@ const postSignup = (req, res, next) => {
             .sendMail({
               from: 'node@shop.com',
               to: email,
+              subject: 'Welcome',
               html: '<h1>Welcome to you Online shop</h1>',
             })
             .catch((error) => console.log(error));
@@ -106,8 +109,17 @@ const postSignup = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+const getReset = (req, res, next) => {
+  res.render('auth/reset', {
+    pageTitle: 'Reset password',
+    path: '/reset',
+    errorMessage: req.flash('errorMessage')[0],
+  })
+};
+
 exports.getLogin = getLogin;
 exports.postLogin = postLogin;
 exports.postLogout = postLogout;
 exports.getSignup = getSignup;
 exports.postSignup = postSignup;
+exports.getReset = getReset;
