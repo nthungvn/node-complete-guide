@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
@@ -96,14 +97,12 @@ const postSignup = (req, res, next) => {
         })
         .then(() => {
           res.redirect('/login');
-          return transporter
-            .sendMail({
-              from: 'node@shop.com',
-              to: email,
-              subject: 'Welcome',
-              html: '<h1>Welcome to you Online shop</h1>',
-            })
-            .catch((error) => console.log(error));
+          return transporter.sendMail({
+            from: process.env.SENDGRID_SENDER,
+            to: email,
+            subject: 'Welcome',
+            html: '<h1>Welcome to you Online shop</h1>',
+          });
         });
     })
     .catch((error) => console.log(error));
@@ -114,7 +113,37 @@ const getReset = (req, res, next) => {
     pageTitle: 'Reset password',
     path: '/reset',
     errorMessage: req.flash('errorMessage')[0],
-  })
+  });
+};
+
+const postReset = (req, res, next) => {
+  const { email } = req.body;
+  let resetUser;
+  User.findOne({ email: email })
+    .then((user) => {
+      if (!user) {
+        req.flash('errorMessage', 'This email was not available!');
+        return res.redirect('/reset');
+      }
+
+      const resetToken = crypto.randomBytes(24).toString('hex');
+      const resetExpirationDate = Date.now() + 60 * 60 * 1000;
+      user.resetToken = resetToken;
+      user.resetExpirationDate = resetExpirationDate;
+      return user.save().then((result) => {
+        res.redirect('/');
+        return transporter.sendMail({
+          from: process.env.SENDGRID_SENDER,
+          to: email,
+          subject: 'Reset your password request',
+          html: `
+          <h2>You're requesting to reset password</h2>
+          <p>Please click to this <a href="http://localhost:3000/reset/${resetToken}">link</a> and finish within 60 minutes.</p>
+        `,
+        });
+      });
+    })
+    .catch((error) => console.log(error));
 };
 
 exports.getLogin = getLogin;
@@ -123,3 +152,4 @@ exports.postLogout = postLogout;
 exports.getSignup = getSignup;
 exports.postSignup = postSignup;
 exports.getReset = getReset;
+exports.postReset = postReset;
