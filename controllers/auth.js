@@ -146,6 +146,24 @@ const postReset = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+const getNewPassword = (req, res, next) => {
+  const { resetToken } = req.params;
+  User.findOne({ resetToken: resetToken })
+    .then((user) => {
+      if (!user) {
+        return res.redirect('/');
+      }
+      res.render('auth/new-password', {
+        pageTitle: 'New password',
+        path: '/reset',
+        resetToken: resetToken,
+        email: user.email,
+        errorMessage: req.flash('errorMessage')[0],
+      });
+    })
+    .catch((error) => console.log(error));
+};
+
 exports.getLogin = getLogin;
 exports.postLogin = postLogin;
 exports.postLogout = postLogout;
@@ -153,3 +171,4 @@ exports.getSignup = getSignup;
 exports.postSignup = postSignup;
 exports.getReset = getReset;
 exports.postReset = postReset;
+exports.getNewPassword = getNewPassword;
