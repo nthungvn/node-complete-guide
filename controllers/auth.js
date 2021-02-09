@@ -148,7 +148,10 @@ const postReset = (req, res, next) => {
 
 const getNewPassword = (req, res, next) => {
   const { resetToken } = req.params;
-  User.findOne({ resetToken: resetToken })
+  User.findOne({
+    resetToken: resetToken,
+    resetExpirationDate: { $gt: Date.now() },
+  })
     .then((user) => {
       if (!user) {
         return res.redirect('/');
@@ -164,6 +167,32 @@ const getNewPassword = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+const postNewPassword = (req, res, next) => {
+  const { email, resetToken, password, confirmPassword } = req.body;
+  User.findOne({
+    email: email,
+    resetToken: resetToken,
+    resetExpirationDate: { $gt: Date.now() },
+  })
+    .then((user) => {
+      if (!user) {
+        return res.redirect('/');
+      }
+      return bcrypt
+        .hash(password, 12)
+        .then((hashPassword) => {
+          user.password = hashPassword;
+          user.resetToken = undefined;
+          user.resetExpirationDate = undefined;
+          return user.save();
+        })
+        .then((result) => {
+          res.redirect('/login');
+        });
+    })
+    .catch((error) => console.log(error));
+};
+
 exports.getLogin = getLogin;
 exports.postLogin = postLogin;
 exports.postLogout = postLogout;
@@ -172,3 +201,4 @@ exports.postSignup = postSignup;
 exports.getReset = getReset;
 exports.postReset = postReset;
 exports.getNewPassword = getNewPassword;
+exports.postNewPassword = postNewPassword;
