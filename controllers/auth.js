@@ -118,7 +118,6 @@ const getReset = (req, res, next) => {
 
 const postReset = (req, res, next) => {
   const { email } = req.body;
-  let resetUser;
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
@@ -160,7 +159,7 @@ const getNewPassword = (req, res, next) => {
         pageTitle: 'New password',
         path: '/reset',
         resetToken: resetToken,
-        email: user.email,
+        userId: user._id,
         errorMessage: req.flash('errorMessage')[0],
       });
     })
@@ -168,9 +167,9 @@ const getNewPassword = (req, res, next) => {
 };
 
 const postNewPassword = (req, res, next) => {
-  const { email, resetToken, password, confirmPassword } = req.body;
+  const { userId, resetToken, password, confirmPassword } = req.body;
   User.findOne({
-    email: email,
+    _id: userId,
     resetToken: resetToken,
     resetExpirationDate: { $gt: Date.now() },
   })
