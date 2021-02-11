@@ -19,6 +19,7 @@ const getLogin = (req, res, next) => {
     pageTitle: 'Login',
     path: '/login',
     errorMessage: req.flash('errorMessage')[0],
+    oldInput: { email: '', password: '' },
   });
 };
 
@@ -36,6 +37,7 @@ const postLogin = (req, res, next) => {
       pageTitle: 'Login',
       path: '/login',
       errorMessage: errors.array()[0].msg,
+      oldInput: { email, password },
     });
   }
 
@@ -81,6 +83,7 @@ const getSignup = (req, res, next) => {
     pageTitle: 'Signup',
     path: '/signup',
     errorMessage: req.flash('errorMessage')[0],
+    oldInput: { email: '', password: '', confirmPassword: '' },
   });
 };
 
@@ -93,6 +96,7 @@ const postSignup = (req, res, next) => {
       pageTitle: 'Signup',
       path: '/signup',
       errorMessage: errors.array()[0].msg,
+      oldInput: { email, password, confirmPassword },
     });
   }
 
@@ -123,6 +127,7 @@ const getReset = (req, res, next) => {
     pageTitle: 'Reset password',
     path: '/reset',
     errorMessage: req.flash('errorMessage')[0],
+    oldInput: { email: '' },
   });
 };
 
@@ -135,6 +140,7 @@ const postReset = (req, res, next) => {
       pageTitle: 'Reset password',
       path: '/reset',
       errorMessage: errors.array()[0].msg,
+      oldInput: { email },
     });
   }
 
