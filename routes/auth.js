@@ -10,7 +10,10 @@ routes.get('/login', authController.getLogin);
 routes.post(
   '/login',
   [
-    body('email').isEmail().withMessage('Please enter a valid email'),
+    body('email')
+      .isEmail()
+      .withMessage('Please enter a valid email')
+      .normalizeEmail(),
     body('password', 'Please enter a valid password')
       .isLength({ min: 6 })
       .isAlphanumeric(),
@@ -32,7 +35,8 @@ routes.post(
           }
           return true;
         });
-      }),
+      })
+      .normalizeEmail(),
     body(
       'password',
       'Please enter a password at least 6 characters and Alphanumeric',
@@ -51,7 +55,12 @@ routes.post(
 routes.get('/reset', authController.getReset);
 routes.post(
   '/reset',
-  [body('email').isEmail().withMessage('Please enter a valid email')],
+  [
+    body('email')
+      .isEmail()
+      .withMessage('Please enter a valid email')
+      .normalizeEmail(),
+  ],
   authController.postReset,
 );
 routes.get('/reset/:resetToken', authController.getNewPassword);
