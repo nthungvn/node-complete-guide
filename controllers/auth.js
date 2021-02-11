@@ -86,34 +86,24 @@ const postSignup = (req, res, next) => {
     });
   }
 
-  User.findOne({ email: email })
-    .then((user) => {
-      if (user) {
-        req.flash('errorMessage', 'The email already existed');
-        return res.redirect('/signup');
-      }
-      bcrypt
-        .genSalt()
-        .then((salted) => {
-          return bcrypt.hash(password, salted);
-        })
-        .then((hashPassword) => {
-          const user = new User({
-            email,
-            password: hashPassword,
-            cart: { items: [] },
-          });
-          return user.save();
-        })
-        .then(() => {
-          res.redirect('/login');
-          return transporter.sendMail({
-            from: process.env.SENDGRID_SENDER,
-            to: email,
-            subject: 'Welcome',
-            html: '<h1>Welcome to you Online shop</h1>',
-          });
-        });
+  bcrypt
+    .hash(password, 12)
+    .then((hashPassword) => {
+      const user = new User({
+        email,
+        password: hashPassword,
+        cart: { items: [] },
+      });
+      return user.save();
+    })
+    .then(() => {
+      res.redirect('/login');
+      return transporter.sendMail({
+        from: process.env.SENDGRID_SENDER,
+        to: email,
+        subject: 'Welcome',
+        html: '<h1>Welcome to you Online shop</h1>',
+      });
     })
     .catch((error) => console.log(error));
 };
