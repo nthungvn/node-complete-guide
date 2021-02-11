@@ -44,7 +44,11 @@ routes.post(
   authController.postSignup,
 );
 routes.get('/reset', authController.getReset);
-routes.post('/reset', authController.postReset);
+routes.post(
+  '/reset',
+  [body('email').isEmail().withMessage('Please enter a valid email')],
+  authController.postReset,
+);
 routes.get('/reset/:resetToken', authController.getNewPassword);
 routes.post('/new-password', authController.postNewPassword);
 

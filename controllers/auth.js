@@ -128,6 +128,16 @@ const getReset = (req, res, next) => {
 
 const postReset = (req, res, next) => {
   const { email } = req.body;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.render('auth/reset', {
+      pageTitle: 'Reset password',
+      path: '/reset',
+      errorMessage: errors.array()[0].msg,
+    });
+  }
+
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
