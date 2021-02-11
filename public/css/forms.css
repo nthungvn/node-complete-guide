@@ -22,6 +22,10 @@
   outline: none;
 }
 
+.form-control.invalid {
+  border-color: red;
+}
+
 .form-control:active,
 .form-control:focus {
   border-color: #2d6a4f;

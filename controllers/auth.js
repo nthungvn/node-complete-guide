@@ -20,6 +20,7 @@ const getLogin = (req, res, next) => {
     path: '/login',
     errorMessage: req.flash('errorMessage')[0],
     oldInput: { email: '', password: '' },
+    errors: [],
   });
 };
 
@@ -31,13 +32,14 @@ const getLogin = (req, res, next) => {
 const postLogin = (req, res, next) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
-
+  console.log(errors.array());
   if (!errors.isEmpty()) {
     return res.status(422).render('auth/login', {
       pageTitle: 'Login',
       path: '/login',
       errorMessage: errors.array()[0].msg,
       oldInput: { email, password },
+      errors: errors.array(),
     });
   }
 
@@ -84,6 +86,7 @@ const getSignup = (req, res, next) => {
     path: '/signup',
     errorMessage: req.flash('errorMessage')[0],
     oldInput: { email: '', password: '', confirmPassword: '' },
+    errors: [],
   });
 };
 
@@ -97,6 +100,7 @@ const postSignup = (req, res, next) => {
       path: '/signup',
       errorMessage: errors.array()[0].msg,
       oldInput: { email, password, confirmPassword },
+      errors: errors.array(),
     });
   }
 
@@ -128,6 +132,7 @@ const getReset = (req, res, next) => {
     path: '/reset',
     errorMessage: req.flash('errorMessage')[0],
     oldInput: { email: '' },
+    errors: [],
   });
 };
 
@@ -141,6 +146,7 @@ const postReset = (req, res, next) => {
       path: '/reset',
       errorMessage: errors.array()[0].msg,
       oldInput: { email },
+      errors: errors.array(),
     });
   }
 
