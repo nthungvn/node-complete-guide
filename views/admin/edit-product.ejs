@@ -6,6 +6,9 @@
     <%- include('../includes/nav.ejs') %>
     <main>
       <form action="/admin/<%= editing ? 'edit-product' : 'add-product' %>" method="POST" class="product-form">
+        <% if (errorMessage) { %>
+          <div class="user-message user-message--error"><%= errorMessage %> </div>
+        <% } %>
         <div class="form-group">
           <label for="title">Title</label>
           <input
