@@ -7,7 +7,11 @@ const User = require('../models/user');
 const routes = express.Router();
 
 routes.get('/login', authController.getLogin);
-routes.post('/login', authController.postLogin);
+routes.post(
+  '/login',
+  [body('email').isEmail().withMessage('Please enter a valid email')],
+  authController.postLogin,
+);
 routes.post('/logout', authController.postLogout);
 routes.get('/signup', authController.getSignup);
 routes.post(
