@@ -9,7 +9,12 @@ const routes = express.Router();
 routes.get('/login', authController.getLogin);
 routes.post(
   '/login',
-  [body('email').isEmail().withMessage('Please enter a valid email')],
+  [
+    body('email').isEmail().withMessage('Please enter a valid email'),
+    body('password', 'Please enter a valid password')
+      .isLength({ min: 6 })
+      .isAlphanumeric(),
+  ],
   authController.postLogin,
 );
 routes.post('/logout', authController.postLogout);

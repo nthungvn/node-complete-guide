@@ -32,7 +32,7 @@ const postLogin = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.render('auth/login', {
+    return res.status(422).render('auth/login', {
       pageTitle: 'Login',
       path: '/login',
       errorMessage: errors.array()[0].msg,
@@ -89,7 +89,7 @@ const postSignup = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.render('auth/signup', {
+    return res.status(422).render('auth/signup', {
       pageTitle: 'Signup',
       path: '/signup',
       errorMessage: errors.array()[0].msg,
@@ -131,7 +131,7 @@ const postReset = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.render('auth/reset', {
+    return res.status(422).render('auth/reset', {
       pageTitle: 'Reset password',
       path: '/reset',
       errorMessage: errors.array()[0].msg,
