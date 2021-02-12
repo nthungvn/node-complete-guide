@@ -3,7 +3,7 @@ const Product = require('../models/product');
 const User = require('../models/user');
 
 exports.getIndex = (req, res) => {
-  Product.find().exec()
+  Product.find()
     .then((products) => {
       res.render('shop/index', {
         prods: products,
@@ -12,12 +12,12 @@ exports.getIndex = (req, res) => {
       });
     })
     .catch((error) => {
-      console.error(error);
+      res.redirect('/500');
     });
 };
 
 exports.getProducts = (req, res) => {
-  Product.find().exec()
+  Product.find()
     .then((products) => {
       res.render('shop/product-list', {
         prods: products,
@@ -26,7 +26,7 @@ exports.getProducts = (req, res) => {
       });
     })
     .catch((error) => {
-      console.error(error);
+      res.redirect('/500');
     });
 };
 
@@ -47,7 +47,7 @@ exports.getProduct = (req, res, next) => {
       });
     })
     .catch((error) => {
-      console.error(error);
+      res.redirect('/500');
     });
 };
 
@@ -70,8 +70,8 @@ exports.postCart = (req, res, next) => {
     .then(() => {
       res.redirect('/cart');
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      res.redirect('/500');
     });
 };
 
@@ -82,8 +82,8 @@ exports.postDeleteCartItem = (req, res, next) => {
     .then(() => {
       res.redirect('/cart');
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      res.redirect('/500');
     });
 };
 
@@ -96,8 +96,8 @@ exports.getOrders = (req, res, next) => {
         orders: orders,
       });
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      res.redirect('/500');
     });
 };
 
@@ -107,8 +107,8 @@ exports.postOrder = (req, res, next) => {
     .then(() => {
       res.redirect('/orders');
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      res.redirect('/500');
     });
 };
 

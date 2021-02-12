@@ -65,7 +65,7 @@ const postLogin = (req, res, next) => {
         });
       });
     })
-    .catch((err) => {
+    .catch((error) => {
       req.flash('errorMessage', 'Incorrect email or password');
       return res.redirect('/login');
     });
@@ -123,7 +123,9 @@ const postSignup = (req, res, next) => {
         html: '<h1>Welcome to you Online shop</h1>',
       });
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      res.redirect('/500');
+    });
 };
 
 const getReset = (req, res, next) => {
@@ -168,13 +170,15 @@ const postReset = (req, res, next) => {
           to: email,
           subject: 'Reset your password request',
           html: `
-          <h2>You're requesting to reset password</h2>
-          <p>Please click to this <a href="http://localhost:3000/reset/${resetToken}">link</a> and finish within 60 minutes.</p>
-        `,
+            <h2>You're requesting to reset password</h2>
+            <p>Please click to this <a href="http://localhost:3000/reset/${resetToken}">link</a> and finish within 60 minutes.</p>
+          `,
         });
       });
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      res.redirect('/500');
+    });
 };
 
 const getNewPassword = (req, res, next) => {
@@ -195,7 +199,9 @@ const getNewPassword = (req, res, next) => {
         errorMessage: req.flash('errorMessage')[0],
       });
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      res.redirect('/500');
+    });
 };
 
 const postNewPassword = (req, res, next) => {
@@ -221,7 +227,9 @@ const postNewPassword = (req, res, next) => {
           res.redirect('/login');
         });
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      res.redirect('/500');
+    });
 };
 
 exports.getLogin = getLogin;

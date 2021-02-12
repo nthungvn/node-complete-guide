@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const { ObjectId } = require('mongodb');
 
 const Product = require('../models/product');
 
@@ -48,6 +49,7 @@ exports.postAddProduct = (req, res, next) => {
   }
 
   Product.create({
+    _id: new ObjectId('600448c0e97e7e096f4408e7'),
     title,
     imageUrl,
     price,
@@ -58,7 +60,7 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch((error) => {
-      console.log(error);
+      res.redirect('/500');
     });
 };
 
@@ -119,7 +121,7 @@ exports.postEditProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch((error) => {
-      console.log(error);
+      res.redirect('/500');
     });
 };
 
@@ -131,6 +133,6 @@ exports.postDeleteProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch((error) => {
-      console.log(error);
+      res.redirect('/500');
     });
 };

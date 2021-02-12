@@ -14,8 +14,7 @@ const errorController = require('./controllers/error');
 const renderAttachedInfo = require('./middleware/renderAttachedInfo');
 const loggedInUser = require('./middleware/loggedInUser');
 
-const MONGODB_URI =
-  `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
+const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
 const app = express();
 const store = new MongoDBStore({
@@ -45,6 +44,7 @@ app.use(renderAttachedInfo);
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+app.use('/500', errorController.get500);
 app.use(errorController.getNotFound);
 
 mongoose
