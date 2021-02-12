@@ -26,7 +26,7 @@ exports.getAddProduct = (req, res, next) => {
     errorMessage: undefined,
     hasError: false,
     product: { title: '', imageUrl: '', price: '', description: '' },
-    errors: [],
+    validationErrors: [],
   });
 };
 
@@ -51,7 +51,7 @@ exports.getEditProduct = (req, res, next) => {
         product: product,
         errorMessage: undefined,
         hasError: false,
-        errors: [],
+        validationErrors: [],
       });
     },
   );
@@ -70,7 +70,7 @@ exports.postEditProduct = (req, res, next) => {
       errorMessage: errors.array()[0].msg,
       hasError: true,
       product: { _id: productId, title, imageUrl, price, description },
-      errors: errors.array(),
+      validationErrors: errors.array(),
     });
   }
 
@@ -116,7 +116,7 @@ exports.postAddProduct = (req, res, next) => {
       errorMessage: errors.array()[0].msg,
       hasError: true,
       product: { title, imageUrl, price, description },
-      errors: errors.array(),
+      validationErrors: errors.array(),
     });
   }
 

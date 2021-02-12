@@ -15,7 +15,7 @@
             type="text"
             id="title"
             name="title"
-            class="form-control <%= errors.find((item) => item.param === 'title') ? 'invalid' : '' %>"
+            class="form-control <%= validationErrors.find((item) => item.param === 'title') ? 'invalid' : '' %>"
             value="<%= editing || hasError ? product.title : '' %>"
           />
         </div>
@@ -25,7 +25,7 @@
             type="text"
             id="imageUrl"
             name="imageUrl"
-            class="form-control <%= errors.find((item) => item.param === 'imageUrl') ? 'invalid' : '' %>"
+            class="form-control <%= validationErrors.find((item) => item.param === 'imageUrl') ? 'invalid' : '' %>"
             value="<%= editing || hasError ? product.imageUrl : '' %>"
           />
         </div>
@@ -35,7 +35,7 @@
             type="number"
             id="price"
             name="price"
-            class="form-control <%= errors.find((item) => item.param === 'price') ? 'invalid' : '' %>"
+            class="form-control <%= validationErrors.find((item) => item.param === 'price') ? 'invalid' : '' %>"
             step="0.01"
             value="<%= editing || hasError ? product.price : '' %>"
           />
@@ -45,7 +45,7 @@
           <textarea
             id="description"
             name="description"
-            class="form-control <%= errors.find((item) => item.param === 'description') ? 'invalid' : '' %>"
+            class="form-control <%= validationErrors.find((item) => item.param === 'description') ? 'invalid' : '' %>"
             rows="5"
           ><%= editing || hasError ? product.description : '' %></textarea>
         </div>

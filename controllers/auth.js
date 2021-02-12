@@ -20,7 +20,7 @@ const getLogin = (req, res, next) => {
     path: '/login',
     errorMessage: req.flash('errorMessage')[0],
     oldInput: { email: '', password: '' },
-    errors: [],
+    validationErrors: [],
   });
 };
 
@@ -39,7 +39,7 @@ const postLogin = (req, res, next) => {
       path: '/login',
       errorMessage: errors.array()[0].msg,
       oldInput: { email, password },
-      errors: errors.array(),
+      validationErrors: errors.array(),
     });
   }
 
@@ -86,7 +86,7 @@ const getSignup = (req, res, next) => {
     path: '/signup',
     errorMessage: req.flash('errorMessage')[0],
     oldInput: { email: '', password: '', confirmPassword: '' },
-    errors: [],
+    validationErrors: [],
   });
 };
 
@@ -100,7 +100,7 @@ const postSignup = (req, res, next) => {
       path: '/signup',
       errorMessage: errors.array()[0].msg,
       oldInput: { email, password, confirmPassword },
-      errors: errors.array(),
+      validationErrors: errors.array(),
     });
   }
 
@@ -132,7 +132,7 @@ const getReset = (req, res, next) => {
     path: '/reset',
     errorMessage: req.flash('errorMessage')[0],
     oldInput: { email: '' },
-    errors: [],
+    validationErrors: [],
   });
 };
 
@@ -146,7 +146,7 @@ const postReset = (req, res, next) => {
       path: '/reset',
       errorMessage: errors.array()[0].msg,
       oldInput: { email },
-      errors: errors.array(),
+      validationErrors: errors.array(),
     });
   }
 

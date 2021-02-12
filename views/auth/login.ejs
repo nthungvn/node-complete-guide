@@ -12,7 +12,7 @@
         <div class="form-group">
           <label for="email">Email</label>
           <input
-            class="form-control <%= errors.find((item) => item.param === 'email') ? 'invalid' : '' %>"
+            class="form-control <%= validationErrors.find((item) => item.param === 'email') ? 'invalid' : '' %>"
             id="email"
             name="email"
             type="text"
@@ -22,7 +22,7 @@
         <div class="form-group">
           <label for="password">Password</label>
           <input
-            class="form-control <%= errors.find((item) => item.param === 'password' ) ? 'invalid' : '' %>"
+            class="form-control <%= validationErrors.find((item) => item.param === 'password' ) ? 'invalid' : '' %>"
             id="password"
             name="password"
             type="password"
