@@ -25,7 +25,17 @@ routes.get(
   authGuard,
   adminController.getEditProduct,
 );
-routes.post('/edit-product', authGuard, adminController.postEditProduct);
+routes.post(
+  '/edit-product',
+  authGuard,
+  [
+    body('title', 'Please enter a title').notEmpty().trim().escape(),
+    body('imageUrl', 'Please enter correct image URL').isURL(),
+    body('price', 'Please enter price as a number').isNumeric(),
+    body('description', 'Please enter description').notEmpty().trim().escape(),
+  ],
+  adminController.postEditProduct,
+);
 routes.post('/delete-product', authGuard, adminController.postDeleteProduct);
 
 // /admin/products => GET

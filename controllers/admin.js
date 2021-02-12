@@ -49,6 +49,9 @@ exports.getEditProduct = (req, res, next) => {
         path: '/admin/edit-product',
         editing: editMode,
         product: product,
+        errorMessage: undefined,
+        hasError: false,
+        errors: [],
       });
     },
   );
@@ -56,6 +59,21 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { productId, title, imageUrl, price, description } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Edit Product',
+      path: '/admin/edit-product',
+      editing: true,
+      errorMessage: errors.array()[0].msg,
+      hasError: true,
+      product: { _id: productId, title, imageUrl, price, description },
+      errors: errors.array(),
+    });
+  }
+
   Product.findOne({ _id: productId, userId: req.user._id.toString() })
     .then((product) => {
       product.title = title;
