@@ -24,6 +24,9 @@ exports.getAddProduct = (req, res, next) => {
     path: '/admin/add-product',
     editing: false,
     errorMessage: undefined,
+    hasError: false,
+    product: { title: '', imageUrl: '', price: '', description: '' },
+    errors: [],
   });
 };
 
@@ -93,10 +96,19 @@ exports.postAddProduct = (req, res, next) => {
       path: '/admin/add-product',
       editing: false,
       errorMessage: errors.array()[0].msg,
+      hasError: true,
+      product: { title, imageUrl, price, description },
+      errors: errors.array(),
     });
   }
 
-  Product.create({ title, imageUrl, price, description, userId: req.session.user })
+  Product.create({
+    title,
+    imageUrl,
+    price,
+    description,
+    userId: req.session.user,
+  })
     .then((result) => {
       res.redirect('/admin/products');
     })

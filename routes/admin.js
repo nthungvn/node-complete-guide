@@ -13,12 +13,10 @@ routes.post(
   '/add-product',
   authGuard,
   [
-    body('title', 'Please enter a title').custom((title) => !!title),
+    body('title', 'Please enter a title').notEmpty().trim().escape(),
     body('imageUrl', 'Please enter correct image URL').isURL(),
     body('price', 'Please enter price as a number').isNumeric(),
-    body('description', 'Please enter description').custom(
-      (description) => !!description,
-    ),
+    body('description', 'Please enter description').notEmpty().trim().escape(),
   ],
   adminController.postAddProduct,
 );
