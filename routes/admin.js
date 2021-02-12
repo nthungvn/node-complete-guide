@@ -13,10 +13,13 @@ routes.post(
   '/add-product',
   authGuard,
   [
-    body('title', 'Please enter a title').notEmpty().trim().escape(),
+    body('title', 'Please enter a title').isLength({ min: 3 }).trim().escape(),
     body('imageUrl', 'Please enter correct image URL').isURL(),
-    body('price', 'Please enter price as a number').isNumeric(),
-    body('description', 'Please enter description').notEmpty().trim().escape(),
+    body('price', 'Please enter price as a number').isFloat(),
+    body('description', 'Please enter description')
+      .isLength({ min: 5, max: 400 })
+      .trim()
+      .escape(),
   ],
   adminController.postAddProduct,
 );
@@ -29,10 +32,13 @@ routes.post(
   '/edit-product',
   authGuard,
   [
-    body('title', 'Please enter a title').notEmpty().trim().escape(),
+    body('title', 'Please enter a title').isLength({ min: 3 }).trim().escape(),
     body('imageUrl', 'Please enter correct image URL').isURL(),
-    body('price', 'Please enter price as a number').isNumeric(),
-    body('description', 'Please enter description').notEmpty().trim().escape(),
+    body('price', 'Please enter price as a number').isFloat(),
+    body('description', 'Please enter description')
+      .isLength({ min: 5, max: 400 })
+      .trim()
+      .escape(),
   ],
   adminController.postEditProduct,
 );
