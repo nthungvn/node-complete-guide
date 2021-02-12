@@ -124,7 +124,9 @@ const postSignup = (req, res, next) => {
       });
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -177,7 +179,9 @@ const postReset = (req, res, next) => {
       });
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -200,7 +204,9 @@ const getNewPassword = (req, res, next) => {
       });
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -228,7 +234,9 @@ const postNewPassword = (req, res, next) => {
         });
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 

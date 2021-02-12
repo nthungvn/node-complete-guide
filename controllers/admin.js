@@ -49,7 +49,6 @@ exports.postAddProduct = (req, res, next) => {
   }
 
   Product.create({
-    _id: new ObjectId('600448c0e97e7e096f4408e7'),
     title,
     imageUrl,
     price,
@@ -60,7 +59,9 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -121,7 +122,9 @@ exports.postEditProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -133,6 +136,8 @@ exports.postDeleteProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };

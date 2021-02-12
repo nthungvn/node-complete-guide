@@ -5,7 +5,7 @@ exports.getNotFound = (req, res, next) => {
   });
 };
 
-exports.get500 = (err, res, next) => {
+exports.get500 = (error, req, res, next) => {
   res.status(500).render('500', {
     pageTitle: 'Server Error',
     path: '/500',

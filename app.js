@@ -37,15 +37,15 @@ app.use(
 );
 const csrfProtection = csrf();
 
-app.use(loggedInUser);
 app.use(csrfProtection);
-app.use(flash);
 app.use(renderAttachedInfo);
+app.use(loggedInUser);
+app.use(flash);
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-app.use('/500', errorController.get500);
 app.use(errorController.getNotFound);
+app.use(errorController.get500);
 
 mongoose
   .connect(MONGODB_URI, {

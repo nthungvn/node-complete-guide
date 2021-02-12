@@ -12,7 +12,9 @@ exports.getIndex = (req, res) => {
       });
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -26,7 +28,9 @@ exports.getProducts = (req, res) => {
       });
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -47,7 +51,9 @@ exports.getProduct = (req, res, next) => {
       });
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -71,7 +77,9 @@ exports.postCart = (req, res, next) => {
       res.redirect('/cart');
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -83,7 +91,9 @@ exports.postDeleteCartItem = (req, res, next) => {
       res.redirect('/cart');
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -97,7 +107,9 @@ exports.getOrders = (req, res, next) => {
       });
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
@@ -108,7 +120,9 @@ exports.postOrder = (req, res, next) => {
       res.redirect('/orders');
     })
     .catch((error) => {
-      res.redirect('/500');
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
