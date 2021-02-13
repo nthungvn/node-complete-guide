@@ -159,3 +159,4 @@ dist
 assets/scripts/
 nodemon.json
 uploads/
+data/invoices/

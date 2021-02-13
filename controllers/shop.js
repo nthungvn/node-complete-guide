@@ -1,6 +1,8 @@
+const fs = require('fs');
+const path = require('path');
+
 const Order = require('../models/order');
 const Product = require('../models/product');
-const User = require('../models/user');
 
 exports.getIndex = (req, res) => {
   Product.find()
@@ -126,9 +128,25 @@ exports.postOrder = (req, res, next) => {
     });
 };
 
-exports.getCheckout = (req, res, next) => {
-  res.render('shop/checkout', {
-    pageTitle: 'Checkout',
-    path: '/checkout',
-  });
+/**
+ * @param {import('express-serve-static-core').Request} req
+ * @param {import('express-serve-static-core').Response} res
+ * @param {*} next
+ */
+exports.getInvoice = (req, res, next) => {
+  const { orderId } = req.params;
+  Order.findOne({ _id: orderId, userId: req.session.user._id }).then(
+    (order) => {
+      if (order) {
+        return res.redirect('/404');
+      }
+      const invoicePath = path.resolve(
+        'data',
+        'invoices',
+        `invoice-${orderId}.pdf`,
+      );
+      const invoiceFile = fs.createReadStream(invoicePath);
+      invoiceFile.pipe(res);
+    },
+  );
 };
