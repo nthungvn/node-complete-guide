@@ -14,7 +14,6 @@ routes.post(
   authGuard,
   [
     body('title', 'Please enter a title').isLength({ min: 3 }).trim().escape(),
-    body('imageUrl', 'Please enter correct image URL').isURL(),
     body('price', 'Please enter price as a number').isFloat(),
     body('description', 'Please enter description')
       .isLength({ min: 5, max: 400 })
@@ -33,7 +32,6 @@ routes.post(
   authGuard,
   [
     body('title', 'Please enter a title').isLength({ min: 3 }).trim().escape(),
-    body('imageUrl', 'Please enter correct image URL').isURL(),
     body('price', 'Please enter price as a number').isFloat(),
     body('description', 'Please enter description')
       .isLength({ min: 5, max: 400 })

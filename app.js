@@ -2,6 +2,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 const session = require('express-session');
 const csrf = require('csurf');
 const flash = require('connect-flash')();
@@ -22,6 +23,15 @@ const store = new MongoDBStore({
   collection: 'sessions',
 });
 
+const multerConfig = multer.diskStorage({
+  destination: 'uploads/',
+  filename: (req, file, cb) => {
+    cb(null, Date.now().toString() + '-' + file.originalname);
+  },
+});
+
+const csrfProtection = csrf();
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -35,8 +45,8 @@ app.use(
     store: store,
   }),
 );
-const csrfProtection = csrf();
 
+app.use(multer({ storage: multerConfig }).single('image'));
 app.use(csrfProtection);
 app.use(renderAttachedInfo);
 app.use(loggedInUser);
