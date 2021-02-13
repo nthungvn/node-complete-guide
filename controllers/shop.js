@@ -1,8 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+const PDFDocument = require('pdfkit');
 
 const Order = require('../models/order');
 const Product = require('../models/product');
+const { deleteFile } = require('../utils/file');
 
 exports.getIndex = (req, res) => {
   Product.find()
@@ -140,18 +142,40 @@ exports.getInvoice = (req, res, next) => {
       if (!order) {
         return res.redirect('/404');
       }
-      const invoicePath = path.resolve(
-        'data',
-        'invoices',
-        `invoice-${orderId}.pdf`,
-      );
+
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader(
         'Content-Disposition',
         `inline; filename=invoice-${orderId}.pdf`,
       );
-      const invoiceFile = fs.createReadStream(invoicePath);
-      invoiceFile.pipe(res);
+
+      const invoicePath = path.resolve(
+        'data',
+        'invoices',
+        `invoice-${orderId}.pdf`,
+      );
+      const invoicePdf = new PDFDocument();
+      const invoiceStream = fs.createWriteStream(invoicePath);
+      invoicePdf.pipe(invoiceStream);
+      invoicePdf.pipe(res);
+      invoicePdf.fontSize(24).text('Invoice - ' + orderId);
+      invoicePdf.fontSize(16);
+      invoicePdf.text('---------------------------');
+      let total = 0;
+      order.products.forEach((product) => {
+        total += product.price;
+        invoicePdf.text(
+          `${product.title}: ${product.quantity} - ${product.price}$`,
+        );
+      });
+      invoicePdf.text('---------------------------');
+      invoicePdf.fontSize(24).text(`Total: ${total}$`);
+      invoicePdf.end();
+      invoiceStream.end('finish', () => {
+        setTimeout(() => {
+          deleteFile(invoicePath);
+        }, 30_000);
+      });
     },
   );
 };
