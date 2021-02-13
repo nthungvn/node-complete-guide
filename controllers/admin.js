@@ -49,8 +49,7 @@ exports.postAddProduct = (req, res, next) => {
     });
   }
 
-  const imagePath = req.file && req.file.path;
-  if (!imagePath) {
+  if (!req.file) {
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product',
       path: '/admin/add-product',
@@ -62,7 +61,7 @@ exports.postAddProduct = (req, res, next) => {
     });
   }
 
-  const imageUrl = `${host}/${imagePath}`;
+  const imageUrl = `${host}/${req.file.path}`;
   Product.create({
     title,
     imageUrl,
