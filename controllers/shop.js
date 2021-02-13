@@ -142,18 +142,11 @@ exports.getInvoice = (req, res, next) => {
       if (!order) {
         return res.redirect('/404');
       }
-
+      const invoiceName = `invoice-${orderId}.pdf`;
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader(
-        'Content-Disposition',
-        `inline; filename=invoice-${orderId}.pdf`,
-      );
+      res.setHeader('Content-Disposition', `inline; filename=${invoiceName}`);
 
-      const invoicePath = path.resolve(
-        'data',
-        'invoices',
-        `invoice-${orderId}.pdf`,
-      );
+      const invoicePath = path.resolve('data', 'invoices', invoiceName);
       const invoicePdf = new PDFDocument();
       const invoiceStream = fs.createWriteStream(invoicePath);
       invoicePdf.pipe(invoiceStream);
