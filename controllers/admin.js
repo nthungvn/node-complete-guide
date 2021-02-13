@@ -126,7 +126,10 @@ exports.postEditProduct = (req, res, next) => {
   Product.findOne({ _id: productId, userId: req.user._id.toString() })
     .then((product) => {
       product.title = title;
-      product.imageUrl = imageUrl;
+      if (req.file) {
+        const imageUrl = `${host}/${req.file.path}`;
+        product.imageUrl = imageUrl;
+      }
       product.price = price;
       product.description = description;
 
