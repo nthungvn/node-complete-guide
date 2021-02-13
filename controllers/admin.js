@@ -1,7 +1,8 @@
 const { validationResult } = require('express-validator');
-const { ObjectId } = require('mongodb');
 
 const Product = require('../models/product');
+
+const host = process.env.HOST || 'http://localhost:3000';
 
 exports.getProducts = (req, res, next) => {
   Product.find({
@@ -48,8 +49,8 @@ exports.postAddProduct = (req, res, next) => {
     });
   }
 
-  const imageUrl = req.file && req.file.path;
-  if (!imageUrl) {
+  const imagePath = req.file && req.file.path;
+  if (!imagePath) {
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product',
       path: '/admin/add-product',
@@ -61,6 +62,7 @@ exports.postAddProduct = (req, res, next) => {
     });
   }
 
+  const imageUrl = `${host}/${imagePath}`;
   Product.create({
     title,
     imageUrl,
