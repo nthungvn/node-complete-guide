@@ -2,8 +2,6 @@ const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
 
-const host = process.env.HOST || 'http://localhost:3000';
-
 exports.getProducts = (req, res, next) => {
   Product.find({
     userId: {
@@ -61,7 +59,7 @@ exports.postAddProduct = (req, res, next) => {
     });
   }
 
-  const imageUrl = `${host}/${req.file.path}`;
+  const imageUrl = req.file.path;
   Product.create({
     title,
     imageUrl,
@@ -127,8 +125,7 @@ exports.postEditProduct = (req, res, next) => {
     .then((product) => {
       product.title = title;
       if (req.file) {
-        const imageUrl = `${host}/${req.file.path}`;
-        product.imageUrl = imageUrl;
+        product.imageUrl = req.file.path;
       }
       product.price = price;
       product.description = description;
