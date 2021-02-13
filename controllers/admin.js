@@ -26,13 +26,13 @@ exports.getAddProduct = (req, res, next) => {
     editing: false,
     errorMessage: undefined,
     hasError: false,
-    product: { title: '', imageUrl: '', price: '', description: '' },
+    product: { title: '', price: '', description: '' },
     validationErrors: [],
   });
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const { title, imageUrl, price, description } = req.body;
+  const { title, price, description } = req.body;
 
   const errors = validationResult(req);
 
@@ -43,8 +43,21 @@ exports.postAddProduct = (req, res, next) => {
       editing: false,
       errorMessage: errors.array()[0].msg,
       hasError: true,
-      product: { title, imageUrl, price, description },
+      product: { title, price, description },
       validationErrors: errors.array(),
+    });
+  }
+
+  const imageUrl = req.file && req.file.path;
+  if (!imageUrl) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/add-product',
+      editing: false,
+      errorMessage: 'Please choose the image',
+      hasError: true,
+      product: { title, price, description },
+      validationErrors: [],
     });
   }
 
@@ -93,7 +106,7 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
-  const { productId, title, imageUrl, price, description } = req.body;
+  const { productId, title, price, description } = req.body;
 
   const errors = validationResult(req);
 
@@ -104,7 +117,7 @@ exports.postEditProduct = (req, res, next) => {
       editing: true,
       errorMessage: errors.array()[0].msg,
       hasError: true,
-      product: { _id: productId, title, imageUrl, price, description },
+      product: { _id: productId, title, price, description },
       validationErrors: errors.array(),
     });
   }
