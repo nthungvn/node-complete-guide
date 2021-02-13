@@ -146,6 +146,8 @@ exports.getInvoice = (req, res, next) => {
         `invoice-${orderId}.pdf`,
       );
       const invoiceFile = fs.createReadStream(invoicePath);
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename=invoice-${orderId}.pdf`);
       invoiceFile.pipe(res);
     },
   );
