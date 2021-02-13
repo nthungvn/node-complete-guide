@@ -1,4 +1,4 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
 const Order = require('../models/order');
@@ -145,22 +145,13 @@ exports.getInvoice = (req, res, next) => {
         'invoices',
         `invoice-${orderId}.pdf`,
       );
-      fs.readFile(invoicePath)
-        .then((file) => {
-          res.setHeader('Content-Type', 'application/pdf');
-          res.setHeader(
-            'Content-Disposition',
-            `inline; filename=invoice-${orderId}.pdf`,
-          );
-          res.send(file);
-        })
-        .catch((error) => {
-          const errorNext = new Error(error);
-          errorNext.httpStatusCode = 500;
-          next(errorNext);
-        });
-      // invoiceFile.pipe(res);
-      // const invoiceFile = fs.createReadStream(invoicePath);
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        `inline; filename=invoice-${orderId}.pdf`,
+      );
+      const invoiceFile = fs.createReadStream(invoicePath);
+      invoiceFile.pipe(res);
     },
   );
 };
