@@ -23,12 +23,25 @@ const store = new MongoDBStore({
   collection: 'sessions',
 });
 
-const multerConfig = multer.diskStorage({
+const multerStorage = multer.diskStorage({
   destination: 'uploads/',
   filename: (req, file, cb) => {
     cb(null, Date.now().toString() + '-' + file.originalname);
   },
 });
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    console.log(file);
+    cb(null, false);
+  }
+};
 
 const csrfProtection = csrf();
 
@@ -46,7 +59,9 @@ app.use(
   }),
 );
 
-app.use(multer({ storage: multerConfig }).single('image'));
+app.use(
+  multer({ storage: multerStorage, fileFilter: fileFilter }).single('image'),
+);
 app.use(csrfProtection);
 app.use(renderAttachedInfo);
 app.use(loggedInUser);
