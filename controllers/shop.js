@@ -137,7 +137,7 @@ exports.postOrder = (req, res, next) => {
  */
 exports.getInvoice = (req, res, next) => {
   const { orderId } = req.params;
-  Order.findOne({ _id: orderId, userId: req.session.user._id }).then(
+  Order.findOne({ _id: orderId, userId: req.user._id }).then(
     (order) => {
       if (!order) {
         return res.redirect('/404');
@@ -156,7 +156,7 @@ exports.getInvoice = (req, res, next) => {
       invoicePdf.text('---------------------------');
       let total = 0;
       order.products.forEach((product) => {
-        total += product.price;
+        total += product.price * product.quantity;
         invoicePdf.text(
           `${product.title}: ${product.quantity} - ${product.price}$`,
         );

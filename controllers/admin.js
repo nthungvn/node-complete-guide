@@ -149,6 +149,9 @@ exports.postDeleteProduct = (req, res, next) => {
 
   Product.findOne({ _id: productId, userId: req.user._id.toString() })
     .then((product) => {
+      if (!product) {
+        return next(new Error('Product not found'));
+      }
       deleteFile(product.imageUrl);
       return product.remove();
     })
