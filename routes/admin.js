@@ -4,12 +4,12 @@ const { body } = require('express-validator');
 const adminController = require('../controllers/admin');
 const authGuard = require('../middleware/authGuard');
 
-const routes = express.Router();
+const router = express.Router();
 
 // /admin/add-product => GET
-routes.get('/add-product', authGuard, adminController.getAddProduct);
+router.get('/add-product', authGuard, adminController.getAddProduct);
 // /admin/add-product => POST
-routes.post(
+router.post(
   '/add-product',
   authGuard,
   [
@@ -22,12 +22,12 @@ routes.post(
   ],
   adminController.postAddProduct,
 );
-routes.get(
+router.get(
   '/edit-product/:productId',
   authGuard,
   adminController.getEditProduct,
 );
-routes.post(
+router.post(
   '/edit-product',
   authGuard,
   [
@@ -40,9 +40,9 @@ routes.post(
   ],
   adminController.postEditProduct,
 );
-routes.post('/delete-product', authGuard, adminController.postDeleteProduct);
+router.post('/delete-product', authGuard, adminController.postDeleteProduct);
 
 // /admin/products => GET
-routes.get('/products', authGuard, adminController.getProducts);
+router.get('/products', authGuard, adminController.getProducts);
 
-module.exports = routes;
+module.exports = router;

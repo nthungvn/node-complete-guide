@@ -4,10 +4,10 @@ const { check, body } = require('express-validator');
 const authController = require('../controllers/auth');
 const User = require('../models/user');
 
-const routes = express.Router();
+const router = express.Router();
 
-routes.get('/login', authController.getLogin);
-routes.post(
+router.get('/login', authController.getLogin);
+router.post(
   '/login',
   [
     body('email')
@@ -20,9 +20,9 @@ routes.post(
   ],
   authController.postLogin,
 );
-routes.post('/logout', authController.postLogout);
-routes.get('/signup', authController.getSignup);
-routes.post(
+router.post('/logout', authController.postLogout);
+router.get('/signup', authController.getSignup);
+router.post(
   '/signup',
   [
     check('email')
@@ -52,8 +52,8 @@ routes.post(
   ],
   authController.postSignup,
 );
-routes.get('/reset', authController.getReset);
-routes.post(
+router.get('/reset', authController.getReset);
+router.post(
   '/reset',
   [
     body('email')
@@ -63,7 +63,7 @@ routes.post(
   ],
   authController.postReset,
 );
-routes.get('/reset/:resetToken', authController.getNewPassword);
-routes.post('/new-password', authController.postNewPassword);
+router.get('/reset/:resetToken', authController.getNewPassword);
+router.post('/new-password', authController.postNewPassword);
 
-module.exports = routes;
+module.exports = router;
