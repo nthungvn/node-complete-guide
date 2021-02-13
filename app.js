@@ -38,7 +38,6 @@ const fileFilter = (req, file, cb) => {
   ) {
     cb(null, true);
   } else {
-    console.log(file);
     cb(null, false);
   }
 };

@@ -32,7 +32,6 @@ const getLogin = (req, res, next) => {
 const postLogin = (req, res, next) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
-  console.log(errors.array());
   if (!errors.isEmpty()) {
     return res.status(422).render('auth/login', {
       pageTitle: 'Login',
@@ -58,7 +57,6 @@ const postLogin = (req, res, next) => {
         req.session.user = user;
         req.session.save((error) => {
           if (error) {
-            console.log(error);
             return res.redirect('/login');
           }
           res.redirect('/');
@@ -74,7 +72,7 @@ const postLogin = (req, res, next) => {
 const postLogout = (req, res, next) => {
   req.session.destroy((error) => {
     if (error) {
-      console.log(error);
+      next(error);
     }
     res.redirect('/');
   });

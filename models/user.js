@@ -89,7 +89,9 @@ userSchema.methods.addOrder = function () {
       return this.save();
     })
     .catch((error) => {
-      console.log(error);
+      const errorNext = new Error(error);
+      errorNext.httpStatusCode = 500;
+      next(errorNext);
     });
 };
 
