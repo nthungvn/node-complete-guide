@@ -3,18 +3,31 @@ const { validationResult } = require('express-validator');
 const Product = require('../models/product');
 const { deleteFile } = require('../utils/file');
 
+const ITEMS_PER_PAGE = 3;
+
 exports.getProducts = (req, res, next) => {
-  Product.find({
-    userId: {
-      $eq: req.session.user._id,
-    },
-  })
-    .exec()
+  const page = +req.query.page || 1;
+
+  let totalProducts;
+
+  Product.countDocuments()
+    .then((numProducts) => {
+      totalProducts = numProducts;
+      return Product.find({ userId: req.user._id })
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Shop',
         path: '/admin/products',
+        currentPage: page,
+        hasPreviousPage: page - 1 > 0,
+        previousPage: Math.max(page - 1, 1),
+        hasNextPage: page * ITEMS_PER_PAGE < totalProducts,
+        nextPage: Math.min(page + 1, Math.ceil(totalProducts / ITEMS_PER_PAGE)),
+        lastPage: Math.ceil(totalProducts / ITEMS_PER_PAGE),
       });
     });
 };

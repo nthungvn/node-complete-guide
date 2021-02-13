@@ -6,19 +6,31 @@ const Order = require('../models/order');
 const Product = require('../models/product');
 const { deleteFile } = require('../utils/file');
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 3;
 
 exports.getIndex = (req, res) => {
   const page = +req.query.page || 1;
 
-  Product.find()
-    .skip((page - 1) * ITEMS_PER_PAGE)
-    .limit(ITEMS_PER_PAGE)
+  let totalProducts;
+
+  Product.countDocuments()
+    .then((numProducts) => {
+      totalProducts = numProducts;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       res.render('shop/index', {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
+        currentPage: page,
+        hasPreviousPage: page - 1 > 0,
+        previousPage: Math.max(page - 1, 1),
+        hasNextPage: page * ITEMS_PER_PAGE < totalProducts,
+        nextPage: Math.min(page + 1, Math.ceil(totalProducts / ITEMS_PER_PAGE)),
+        lastPage: Math.ceil(totalProducts / ITEMS_PER_PAGE),
       });
     })
     .catch((error) => {
@@ -29,12 +41,28 @@ exports.getIndex = (req, res) => {
 };
 
 exports.getProducts = (req, res) => {
-  Product.find()
+  const page = +req.query.page || 1;
+
+  let totalProducts;
+
+  Product.countDocuments()
+    .then((numProducts) => {
+      totalProducts = numProducts;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       res.render('shop/product-list', {
         prods: products,
         pageTitle: 'Your Products',
         path: '/products',
+        currentPage: page,
+        hasPreviousPage: page - 1 > 0,
+        previousPage: Math.max(page - 1, 1),
+        hasNextPage: page * ITEMS_PER_PAGE < totalProducts,
+        nextPage: Math.min(page + 1, Math.ceil(totalProducts / ITEMS_PER_PAGE)),
+        lastPage: Math.ceil(totalProducts / ITEMS_PER_PAGE),
       });
     })
     .catch((error) => {
