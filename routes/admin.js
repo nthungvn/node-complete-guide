@@ -40,7 +40,7 @@ router.post(
   ],
   adminController.postEditProduct,
 );
-router.post('/delete-product', authGuard, adminController.postDeleteProduct);
+router.delete('/products/:productId', authGuard, adminController.deleteProduct);
 
 // /admin/products => GET
 router.get('/products', authGuard, adminController.getProducts);
