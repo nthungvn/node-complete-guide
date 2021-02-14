@@ -11,6 +11,15 @@ exports.getPosts = (req, res, next) => {
           name: 'Hung',
         },
       },
+      {
+        _id: new Date().toISOString(),
+        title: 'The second post',
+        content: 'Here is the content of the second post',
+        createdAt: new Date(),
+        creator: {
+          name: 'Hung',
+        },
+      },
     ],
   });
 };
