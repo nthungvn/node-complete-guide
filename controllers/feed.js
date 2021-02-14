@@ -1,8 +1,9 @@
 exports.getPosts = (req, res, next) => {
   res.status(200).json({
     message: 'OK',
-    data: [
+    posts: [
       {
+        _id: new Date().toISOString(),
         title: 'The first post',
         content: 'Here is the content of the first post',
         createdAt: new Date(),
@@ -19,7 +20,8 @@ exports.createPost = (req, res, next) => {
 
   res.status(200).json({
     message: 'OK',
-    data: {
+    post: {
+      _id: new Date().toISOString(),
       title: title,
       content: content,
     },
