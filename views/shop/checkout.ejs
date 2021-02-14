@@ -18,10 +18,17 @@
         </div>
         <hr>
         <div class="centered">
-          <form action="/orders" method="POST">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button type="submit" class="btn">Order Now!</button>
-          </form>
+          <button class="btn" id="order-now">Order Now!</button>
+          <script src="https://js.stripe.com/v3/"></script>
+          <script>
+            const stripe = Stripe('pk_test_51IKYvvBc1grCTA1nytotq9PdrDl5BzJROtITyF1ZwKTDpLPIw7hmrAda6ucubwZP2yIkBLSfJR3VEHHdA30cmTHK00VAMpJV4y');
+            const orderBtn = document.getElementById('order-now');
+            orderBtn.addEventListener('click', () => {
+              stripe.redirectToCheckout({
+                sessionId: ''
+              });
+            });
+          </script>
         </div>
       <% } else { %>
         <div class="centered">
