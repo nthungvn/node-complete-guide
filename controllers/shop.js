@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 const Order = require('../models/order');
 const Product = require('../models/product');
@@ -143,18 +144,42 @@ exports.postDeleteCartItem = (req, res, next) => {
 };
 
 exports.getCheckout = (req, res, next) => {
+  let fetchedProducts;
+  let totalPrice;
   req.user
     .getCart()
     .then((products) => {
-      const totalPrice = products.reduce((previousValue, currentProduct) => {
-        return currentProduct.productId.price * currentProduct.quantity;
-      }, 0);
+      fetchedProducts = products;
+      totalPrice = products.reduce(
+        (previousValue, currentProduct) =>
+          previousValue +
+          currentProduct.productId.price * currentProduct.quantity,
+        0,
+      );
 
+      const lineItems = products.map((product) => ({
+        name: product.productId.title,
+        description: product.productId.description,
+        quantity: product.quantity,
+        currency: 'usd',
+        amount: product.productId.price * 100,
+      }));
+
+      return stripe.checkout.sessions.create({
+        success_url: `${req.protocol}://${req.get('host')}/checkout/success`,
+        cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel`,
+        payment_method_types: ['card'],
+        line_items: lineItems,
+        mode: 'payment',
+      });
+    })
+    .then((session) => {
       res.render('shop/checkout', {
         pageTitle: 'Checkout',
         path: '/checkout',
-        products: products,
+        products: fetchedProducts,
         totalPrice: totalPrice,
+        sessionId: session.id,
       });
     })
     .catch((error) => {
@@ -180,7 +205,7 @@ exports.getOrders = (req, res, next) => {
     });
 };
 
-exports.postOrder = (req, res, next) => {
+exports.postCheckoutSuccess = (req, res, next) => {
   req.user
     .addOrder()
     .then(() => {
