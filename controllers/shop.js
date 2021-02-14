@@ -135,6 +135,16 @@ exports.postDeleteCartItem = (req, res, next) => {
     });
 };
 
+exports.getCheckout = (req, res, next) => {
+  req.user.getCart().then((products) => {
+    res.render('shop/checkout', {
+      pageTitle: 'Checkout',
+      path: '/checkout',
+      products: products,
+    });
+  });
+};
+
 exports.getOrders = (req, res, next) => {
   Order.find({ userId: req.session.user._id })
     .then((orders) => {
