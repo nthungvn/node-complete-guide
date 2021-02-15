@@ -98,6 +98,7 @@ exports.updatePost = (req, res, next) => {
       post.title = title;
       post.content = content;
       if (req.file) {
+        deleteFile(post.imageUrl);
         post.imageUrl = req.file.path;
       }
       return post.save();
