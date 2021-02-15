@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
@@ -36,12 +37,17 @@ exports.postSignup = (req, res, next) => {
       return newUser.save();
     })
     .then((result) => {
+      const token = jwt.sign({ email: result.email }, 'my-secret', {
+        issuer: 'Self',
+        expiresIn: '3m',
+      });
+
       res.status(200).json({
         message: 'OK',
         user: {
           name: result.name,
           email: result.email,
-          token: 'result.password',
+          token: token,
         },
       });
     })
@@ -68,11 +74,17 @@ exports.postLogin = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
+      return jwt.sign({ email: fetchedUser.email }, 'my-secret', {
+        issuer: 'Self',
+        expiresIn: '3m',
+      });
+    })
+    .then((token) => {
       res.status(200).json({
         message: 'OK',
         user: {
           email: email,
-          token: 'waiting',
+          token: token,
         },
       });
     })
