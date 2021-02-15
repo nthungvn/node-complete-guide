@@ -34,7 +34,7 @@ app.use(multer({ storage: storage, fileFilter: fileFilter }).single('image'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/feed', feedRoutes);
 app.use(serverError);
 
