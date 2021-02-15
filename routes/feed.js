@@ -7,6 +7,8 @@ const router = Router();
 
 router.get('/posts', feedController.getPosts);
 
+router.get('/posts/:postId', feedController.getPost);
+
 router.post(
   '/posts',
   [
@@ -37,6 +39,6 @@ router.put(
   feedController.updatePost,
 );
 
-router.get('/posts/:postId', feedController.getSinglePost);
+router.delete('/posts/:postId', feedController.deletePost);
 
 module.exports = router;

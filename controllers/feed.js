@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Post = require('../models/post');
+const { deleteFile } = require('../utils/file');
 
 exports.getPosts = (req, res, next) => {
   Post.find()
@@ -12,7 +13,7 @@ exports.getPosts = (req, res, next) => {
     .catch((error) => next(error));
 };
 
-exports.getSinglePost = (req, res, next) => {
+exports.getPost = (req, res, next) => {
   const { postId } = req.params;
 
   Post.findById(postId)
@@ -111,6 +112,25 @@ exports.updatePost = (req, res, next) => {
         message: 'OK',
         post: result,
       });
+    })
+    .catch((error) => next(error));
+};
+
+exports.deletePost = (req, res, next) => {
+  const { postId } = req.params;
+
+  Post.findOne({ _id: postId })
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({
+          message: 'No post found',
+        });
+      }
+      deleteFile(post.imageUrl);
+      return post.remove();
+    })
+    .then((result) => {
+      res.status(200).json({ message: 'Post deleted' });
     })
     .catch((error) => next(error));
 };
