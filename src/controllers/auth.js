@@ -15,7 +15,7 @@ exports.postSignup = (req, res, next) => {
   if (!errors.isEmpty()) {
     const error = new Error('Validation failed');
     error.statusCode = 422;
-    error.validation = errorMessage;
+    error.data = errorMessage;
     throw error;
   }
 

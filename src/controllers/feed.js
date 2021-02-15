@@ -52,7 +52,7 @@ exports.createPost = (req, res, next) => {
     const errorMessages = {};
     errors.array().forEach((error) => (errorMessages[error.param] = error.msg));
     const error = new Error('Validation failed, data input are incorrect');
-    error.validation = errorMessages;
+    error.data = errorMessages;
     error.statusCode = 422;
     throw error;
   }
@@ -95,7 +95,7 @@ exports.updatePost = (req, res, next) => {
     const errorMessages = {};
     errors.array().forEach((error) => (errorMessages[error.param] = error.msg));
     const error = new Error('Validation failed, data input are incorrect');
-    error.validation = errorMessages;
+    error.data = errorMessages;
     error.statusCode = 422;
     throw error;
   }
