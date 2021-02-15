@@ -17,6 +17,11 @@ exports.getSinglePost = (req, res, next) => {
 
   Post.findById(postId)
     .then((post) => {
+      if (!post) {
+        return res.status(404).json({
+          message: 'No post found',
+        });
+      }
       res.status(200).json({
         message: 'OK',
         post: post,
@@ -47,7 +52,6 @@ exports.createPost = (req, res, next) => {
     creator: {
       name: 'Hung',
     },
-    createdAt: new Date(),
   });
 
   post
