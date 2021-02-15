@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -13,6 +14,16 @@ const userSchema = new mongoose.Schema({
     type: 'String',
     required: true,
   },
+  status: {
+    type: 'String',
+    required: true,
+  },
+  posts: [
+    {
+      type: ObjectId,
+      ref: 'Post',
+    },
+  ],
 });
 
 module.exports = mongoose.model('User', userSchema);
