@@ -75,10 +75,9 @@ exports.createPost = (req, res, next) => {
 
 exports.updatePost = (req, res, next) => {
   const { postId } = req.params;
-  const { title, content } = req.body;
+  const { title, content, image } = req.body;
 
   const errors = validationResult(req);
-
 
   if (!errors.isEmpty()) {
     const errorMessages = {};
@@ -122,8 +121,7 @@ exports.deletePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      deleteFile(post.imageUrl);
-      return post.remove();
+      return Promise.all([deleteFile(post.imageUrl), post.remove()]);
     })
     .then((result) => {
       res.status(200).json({ message: 'Post deleted' });
