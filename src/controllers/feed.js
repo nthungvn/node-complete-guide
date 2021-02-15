@@ -2,11 +2,23 @@ const { validationResult } = require('express-validator');
 const Post = require('../models/post');
 const { deleteFile } = require('../utils/file');
 
+const ITEMS_PER_PAGE = 3;
+
 exports.getPosts = (req, res, next) => {
-  Post.find()
+  const page = req.query.page || 1;
+  let totalItems = 0;
+
+  Post.countDocuments()
+    .then((count) => {
+      totalItems = count;
+      return Post.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((posts) => {
       res.status(200).json({
         message: 'OK',
+        totalItems: totalItems,
         posts: posts,
       });
     })
