@@ -7,6 +7,7 @@ const multer = require('multer');
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
 const cors = require('./middlewares/cors');
+const authGuard = require('./middlewares/auth-guard');
 const serverError = require('./middlewares/server-error');
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
@@ -36,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
-app.use('/feed', feedRoutes);
+app.use('/feed', authGuard, feedRoutes);
 app.use('/auth', authRoutes);
 app.use(serverError);
 

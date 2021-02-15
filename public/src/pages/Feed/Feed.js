@@ -50,7 +50,11 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('http://localhost:8080/feed/posts?page=' + page)
+    fetch('http://localhost:8080/feed/posts?page=' + page, {
+      headers: {
+        authorization: 'Bearer ' + this.props.token,
+      },
+    })
       .then(res => {
         if (res.status !== 200) {
           throw new Error('Failed to fetch posts.');
@@ -122,8 +126,11 @@ class Feed extends Component {
     formData.append("image", postData.image);
 
     fetch(url, {
+      headers: {
+        authorization: 'Bearer ' + this.props.token,
+      },
       method: method,
-      body: formData
+      body: formData,
     })
       .then(res => {
         if (res.status !== 200 && res.status !== 201) {
@@ -137,13 +144,13 @@ class Feed extends Component {
           title: resData.post.title,
           content: resData.post.content,
           creator: resData.post.creator,
-          createdAt: resData.post.createdAt
+          createdAt: resData.post.createdAt,
         };
         this.setState(prevState => {
           let updatedPosts = [...prevState.posts];
           if (prevState.editPost) {
             const postIndex = prevState.posts.findIndex(
-              p => p._id === prevState.editPost._id
+              p => p._id === prevState.editPost._id,
             );
             updatedPosts[postIndex] = post;
           } else if (prevState.posts.length < 2) {
@@ -153,7 +160,7 @@ class Feed extends Component {
             posts: updatedPosts,
             isEditing: false,
             editPost: null,
-            editLoading: false
+            editLoading: false,
           };
         });
       })
@@ -163,7 +170,7 @@ class Feed extends Component {
           isEditing: false,
           editPost: null,
           editLoading: false,
-          error: err
+          error: err,
         });
       });
   };
@@ -175,6 +182,9 @@ class Feed extends Component {
   deletePostHandler = postId => {
     this.setState({ postsLoading: true });
     fetch('http://localhost:8080/feed/posts/' + postId, {
+      headers: {
+        authorization: 'Bearer ' + this.props.token,
+      },
       method: 'DELETE',
     })
       .then(res => {
