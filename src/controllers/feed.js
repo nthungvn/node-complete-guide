@@ -8,10 +8,10 @@ exports.getPosts = (req, res, next) => {
   const page = req.query.page || 1;
   let totalItems = 0;
 
-  Post.countDocuments()
+  Post.countDocuments({ creator: req.user })
     .then((count) => {
       totalItems = count;
-      return Post.find()
+      return Post.find({ creator: req.user })
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
     })
@@ -28,7 +28,7 @@ exports.getPosts = (req, res, next) => {
 exports.getPost = (req, res, next) => {
   const { postId } = req.params;
 
-  Post.findById(postId)
+  Post.findOne({ _id: postId, creator: req.user })
     .populate('creator', 'name email')
     .then((post) => {
       if (!post) {
@@ -99,7 +99,7 @@ exports.updatePost = (req, res, next) => {
     throw error;
   }
 
-  Post.findOne({ _id: postId })
+  Post.findOne({ _id: postId, creator: req.user })
     .then((post) => {
       if (!post) {
         const error = new Error('No post found');
@@ -126,7 +126,7 @@ exports.updatePost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
   const { postId } = req.params;
 
-  Post.findOne({ _id: postId })
+  Post.findOne({ _id: postId, creator: req.user._id })
     .then((post) => {
       if (!post) {
         const error = new Error('No post found');
