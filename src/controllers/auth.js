@@ -5,8 +5,6 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 
 exports.postSignup = (req, res, next) => {
-  const { name, email, password } = req.body;
-
   const errors = validationResult(req);
 
   const errorMessage = {};
@@ -18,6 +16,8 @@ exports.postSignup = (req, res, next) => {
     error.data = errorMessage;
     throw error;
   }
+
+  const { name, email, password } = req.body;
 
   User.findOne({ email: email })
     .then((user) => {

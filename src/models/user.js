@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   },
   status: {
     type: 'String',
-    required: true,
+    default: 'New',
   },
   posts: [
     {
