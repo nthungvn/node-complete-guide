@@ -31,7 +31,7 @@ module.exports = (req, res, next) => {
       if (!user) {
         throwUnauthenticated();
       }
-      req.userId = user._id;
+      req.user = user;
       next();
     })
     .catch((error) => next(error));

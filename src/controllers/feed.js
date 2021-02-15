@@ -29,6 +29,7 @@ exports.getPost = (req, res, next) => {
   const { postId } = req.params;
 
   Post.findById(postId)
+    .populate('creator', 'name email')
     .then((post) => {
       if (!post) {
         const error = new Error('No post found');
@@ -69,9 +70,7 @@ exports.createPost = (req, res, next) => {
     title: title,
     content: content,
     imageUrl: imageUrl,
-    creator: {
-      name: 'Hung',
-    },
+    creator: req.user,
   });
 
   post
