@@ -12,6 +12,19 @@ exports.getPosts = (req, res, next) => {
     .catch((error) => next(error));
 };
 
+exports.getSinglePost = (req, res, next) => {
+  const { postId } = req.params;
+
+  Post.findById(postId)
+    .then((post) => {
+      res.status(200).json({
+        message: 'OK',
+        post: post,
+      });
+    })
+    .catch((error) => next(error));
+};
+
 exports.createPost = (req, res, next) => {
   const { title, content } = req.body;
 
