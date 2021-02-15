@@ -6,17 +6,26 @@
   "configurations": [
     {
       "type": "node",
+      "name": "Attach Program",
+      "request": "attach",
+      "restart": true,
+      "port": 9229
+    },
+    {
+      "type": "node",
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/app.js",
+      "restart": true,
       "runtimeExecutable": "nodemon",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     },
     {
       "type": "node",
-      "request": "attach",
       "name": "Attach by Process ID",
+      "request": "attach",
       "processId": "${command:PickProcess}"
     }
   ]
