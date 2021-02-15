@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 
 const feedRoutes = require('./routes/feed');
+const authRoutes = require('./routes/auth');
 const cors = require('./middlewares/cors');
 const serverError = require('./middlewares/server-error');
 
@@ -36,6 +37,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/feed', feedRoutes);
+app.use('/auth', authRoutes);
 app.use(serverError);
 
 mongoose
