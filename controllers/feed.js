@@ -45,10 +45,21 @@ exports.createPost = (req, res, next) => {
     });
   }
 
+  if (!req.file) {
+    return res.status(422).json({
+      message: 'Validation failed, data input are incorrect',
+      errors: {
+        image: 'Image is required',
+      },
+    });
+  }
+
+  const imageUrl = req.file.path;
+
   const post = new Post({
     title: title,
     content: content,
-    imageUrl: 'http://localhost:8080/uploads/nokia-72-black-600x600.jpg',
+    imageUrl: imageUrl,
     creator: {
       name: 'Hung',
     },
