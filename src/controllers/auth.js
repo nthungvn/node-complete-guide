@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 exports.signup = (req, res, next) => {
@@ -10,7 +11,7 @@ exports.signup = (req, res, next) => {
         error.statusCode = 409;
         throw error;
       }
-      return 'fdasfdsa';
+      return bcrypt.hash(password, 12);
     })
     .then((hashPassword) => {
       const newUser = new User({
@@ -23,6 +24,11 @@ exports.signup = (req, res, next) => {
     .then((result) => {
       res.status(200).json({
         message: 'OK',
+        user: {
+          name: result.name,
+          email: result.email,
+          token: 'result.password'
+        },
       });
     })
     .catch((error) => next(error));
