@@ -37,18 +37,10 @@ exports.postSignup = (req, res, next) => {
       return newUser.save();
     })
     .then((result) => {
-      const token = jwt.sign({ email: result.email }, 'my-secret', {
-        issuer: 'Self',
-        expiresIn: '3m',
-      });
-
-      res.status(200).json({
-        message: 'OK',
-        user: {
-          name: result.name,
-          email: result.email,
-          token: token,
-        },
+      res.status(201).json({
+        message: 'User created',
+        userId: result._id,
+        email: result.email,
       });
     })
     .catch((error) => next(error));
@@ -74,18 +66,23 @@ exports.postLogin = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
-      return jwt.sign({ email: fetchedUser.email }, 'my-secret', {
-        issuer: 'Self',
-        expiresIn: '3m',
-      });
+      return jwt.sign(
+        {
+          userId: fetchedUser._id,
+          email: fetchedUser.email,
+        },
+        'my-secret',
+        {
+          issuer: 'Self',
+          expiresIn: '1h',
+        },
+      );
     })
     .then((token) => {
       res.status(200).json({
         message: 'OK',
-        user: {
-          email: email,
-          token: token,
-        },
+        userId: fetchedUser._id,
+        token: token,
       });
     })
     .catch((error) => next(error));
