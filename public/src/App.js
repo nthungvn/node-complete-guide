@@ -59,7 +59,16 @@ class App extends Component {
   loginHandler = (event, authData) => {
     event.preventDefault();
     this.setState({ authLoading: true });
-    fetch('URL')
+    fetch('http://localhost:8080/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: authData.email,
+        password: authData.password,
+      }),
+    })
       .then(res => {
         if (res.status === 422) {
           throw new Error('Validation failed.');
@@ -76,13 +85,13 @@ class App extends Component {
           isAuth: true,
           token: resData.token,
           authLoading: false,
-          userId: resData.userId
+          userId: resData.userId,
         });
         localStorage.setItem('token', resData.token);
         localStorage.setItem('userId', resData.userId);
         const remainingMilliseconds = 60 * 60 * 1000;
         const expiryDate = new Date(
-          new Date().getTime() + remainingMilliseconds
+          new Date().getTime() + remainingMilliseconds,
         );
         localStorage.setItem('expiryDate', expiryDate.toISOString());
         this.setAutoLogout(remainingMilliseconds);
@@ -92,7 +101,7 @@ class App extends Component {
         this.setState({
           isAuth: false,
           authLoading: false,
-          error: err
+          error: err,
         });
       });
   };
@@ -100,11 +109,21 @@ class App extends Component {
   signupHandler = (event, authData) => {
     event.preventDefault();
     this.setState({ authLoading: true });
-    fetch('URL')
+    fetch('http://localhost:8080/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: authData.name,
+        email: authData.email,
+        password: authData.password,
+      }),
+    })
       .then(res => {
         if (res.status === 422) {
           throw new Error(
-            "Validation failed. Make sure the email address isn't used yet!"
+            "Validation failed. Make sure the email address isn't used yet!",
           );
         }
         if (res.status !== 200 && res.status !== 201) {
@@ -123,7 +142,7 @@ class App extends Component {
         this.setState({
           isAuth: false,
           authLoading: false,
-          error: err
+          error: err,
         });
       });
   };

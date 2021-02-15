@@ -37,6 +37,7 @@ exports.postSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const { email, password } = req.body;
 
+  let fetchedUser;
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
@@ -44,6 +45,7 @@ exports.postLogin = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
+      fetchedUser = user;
       return bcrypt.compare(password, user.password);
     })
     .then((doMatch) => {
