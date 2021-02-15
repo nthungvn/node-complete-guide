@@ -19,9 +19,9 @@ exports.getPost = (req, res, next) => {
   Post.findById(postId)
     .then((post) => {
       if (!post) {
-        return res.status(404).json({
-          message: 'No post found',
-        });
+        const error = new Error('No post found');
+        error.statusCode = 404;
+        throw error;
       }
       res.status(200).json({
         message: 'OK',
@@ -36,23 +36,19 @@ exports.createPost = (req, res, next) => {
 
   const errors = validationResult(req);
 
-  const errorMessages = {};
-  errors.array().forEach((error) => (errorMessages[error.param] = error.msg));
-
   if (!errors.isEmpty()) {
-    return res.status(422).json({
-      message: 'Validation failed, data input are incorrect',
-      errors: errorMessages,
-    });
+    const errorMessages = {};
+    errors.array().forEach((error) => (errorMessages[error.param] = error.msg));
+    const error = new Error('Validation failed, data input are incorrect');
+    error.validation = errorMessages;
+    error.statusCode = 422;
+    throw error;
   }
 
   if (!req.file) {
-    return res.status(422).json({
-      message: 'Validation failed, data input are incorrect',
-      errors: {
-        image: 'Image is required',
-      },
-    });
+    const error = new Error('Validation failed, Image is required');
+    error.statusCode = 422;
+    throw error;
   }
 
   const imageUrl = req.file.path;
@@ -83,22 +79,22 @@ exports.updatePost = (req, res, next) => {
 
   const errors = validationResult(req);
 
-  const errorMessages = {};
-  errors.array().forEach((error) => (errorMessages[error.param] = error.msg));
 
   if (!errors.isEmpty()) {
-    return res.status(422).json({
-      message: 'Validation failed, data input are incorrect',
-      errors: errorMessages,
-    });
+    const errorMessages = {};
+    errors.array().forEach((error) => (errorMessages[error.param] = error.msg));
+    const error = new Error('Validation failed, data input are incorrect');
+    error.validation = errorMessages;
+    error.statusCode = 422;
+    throw error;
   }
 
   Post.findOne({ _id: postId })
     .then((post) => {
       if (!post) {
-        return res.status(404).json({
-          message: 'No post found',
-        });
+        const error = new Error('No post found');
+        error.statusCode = 404;
+        throw error;
       }
       post.title = title;
       post.content = content;
@@ -122,9 +118,9 @@ exports.deletePost = (req, res, next) => {
   Post.findOne({ _id: postId })
     .then((post) => {
       if (!post) {
-        return res.status(404).json({
-          message: 'No post found',
-        });
+        const error = new Error('No post found');
+        error.statusCode = 404;
+        throw error;
       }
       deleteFile(post.imageUrl);
       return post.remove();

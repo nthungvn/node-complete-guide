@@ -1,8 +1,12 @@
 module.exports = (error, req, res, next) => {
-  console.log(error);
+  const statusCode = error.statusCode || 500;
 
-  res.status(error.httpStatusCode || 500).json({
-    message: 'Unexpected error',
+  if (statusCode === 500) {
+    console.log(error);
+  }
+
+  res.status(statusCode).json({
+    message: error.message,
     error: error,
   });
 };
