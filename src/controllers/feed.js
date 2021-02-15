@@ -8,10 +8,10 @@ exports.getPosts = (req, res, next) => {
   const page = req.query.page || 1;
   let totalItems = 0;
 
-  Post.countDocuments({ creator: req.user })
+  Post.countDocuments()
     .then((count) => {
       totalItems = count;
-      return Post.find({ creator: req.user })
+      return Post.find()
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
     })
@@ -28,7 +28,7 @@ exports.getPosts = (req, res, next) => {
 exports.getPost = (req, res, next) => {
   const { postId } = req.params;
 
-  Post.findOne({ _id: postId, creator: req.user })
+  Post.findOne({ _id: postId })
     .populate('creator', 'name email')
     .then((post) => {
       if (!post) {
