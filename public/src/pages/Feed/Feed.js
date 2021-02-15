@@ -109,7 +109,7 @@ class Feed extends Component {
     let url = 'http://localhost:8080/feed/posts';
     let method = 'POST';
     if (this.state.editPost) {
-      url = 'URL';
+      url = 'http://localhost:8080/feed/posts/' + postData.postId;
       method = 'PUT';
     }
 

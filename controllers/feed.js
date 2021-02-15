@@ -75,3 +75,42 @@ exports.createPost = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.updatePost = (req, res, next) => {
+  const { postId } = req.params;
+  const { title, content } = req.body;
+
+  const errors = validationResult(req);
+
+  const errorMessages = {};
+  errors.array().forEach((error) => (errorMessages[error.param] = error.msg));
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      message: 'Validation failed, data input are incorrect',
+      errors: errorMessages,
+    });
+  }
+
+  Post.findOne({ _id: postId })
+    .then((post) => {
+      if (!post) {
+        return res.status(404).json({
+          message: 'No post found',
+        });
+      }
+      post.title = title;
+      post.content = content;
+      if (req.file) {
+        post.imageUrl = req.file.path;
+      }
+      return post.save();
+    })
+    .then((result) => {
+      res.status(200).json({
+        message: 'OK',
+        post: result,
+      });
+    })
+    .catch((error) => next(error));
+};
