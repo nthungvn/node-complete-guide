@@ -1,15 +1,15 @@
-let io;
+let _io;
 
 module.exports = {
   init: (httpServer, options) => {
     const opts = options || {};
-    if (!io) {
-      io = require('socket.io')(httpServer, opts);
+    if (!_io) {
+      _io = require('socket.io')(httpServer, opts);
     }
-    return io;
+    return _io;
   },
 
-  getIO: () => {
-    return io;
+  io: () => {
+    return _io;
   },
 };

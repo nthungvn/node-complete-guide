@@ -43,7 +43,7 @@ class Feed extends Component {
     });
     socket.on('posts', data => {
       if (data.action === 'create') {
-        console.log('New post was created');
+        this.addPost(data.post);
       }
     });
     this.loadPosts();
@@ -84,6 +84,14 @@ class Feed extends Component {
         });
       })
       .catch(this.catchError);
+  };
+
+  addPost = post => {
+    if (this.state.posts.length < 3) {
+      this.setState({
+        posts: this.state.posts.concat(post),
+      });
+    }
   };
 
   statusUpdateHandler = event => {

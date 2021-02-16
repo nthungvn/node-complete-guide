@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator');
 const Post = require('../models/post');
 const { deleteFile } = require('../utils/file');
 const { throwNotFound } = require('../utils/error');
+const { io } = require('../socket');
 
 const ITEMS_PER_PAGE = 3;
 
@@ -76,9 +77,22 @@ exports.createPost = async (req, res, next) => {
 
   try {
     const result = await post.save();
+
+    const createdPost = { ...result._doc };
+    const creator = {
+      _id: result.creator._id,
+      name: result.creator.name,
+    };
+    createdPost.creator = creator;
+
+    io().emit('posts', {
+      action: 'create',
+      post: createdPost,
+    });
+
     res.status(200).json({
       message: 'OK',
-      post: result,
+      post: createdPost,
     });
   } catch (error) {
     next(error);
