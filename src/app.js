@@ -10,6 +10,7 @@ const userRoutes = require('./routes/user');
 const cors = require('./middlewares/cors');
 const authGuard = require('./middlewares/auth-guard');
 const serverError = require('./middlewares/server-error');
+const socket = require('./socket');
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
@@ -47,7 +48,11 @@ mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => {
     console.log('Mongo connected');
-    app.listen(process.env.PORT || 3000);
+    const httpServer = app.listen(process.env.PORT || 3000);
+    const io = socket.init(httpServer);
+    io.on('connection', (socket) => {
+      console.log('User connected ' + socket.id);
+    });
   })
   .catch((error) => {
     console.log(error);

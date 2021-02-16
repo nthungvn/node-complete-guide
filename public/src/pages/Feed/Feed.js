@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { io as openSocket } from 'socket.io-client';
 
 import Post from '../../components/Feed/Post/Post';
 import Button from '../../components/Button/Button';
@@ -18,7 +19,7 @@ class Feed extends Component {
     status: '',
     postPage: 1,
     postsLoading: true,
-    editLoading: false
+    editLoading: false,
   };
 
   componentDidMount() {
@@ -37,7 +38,14 @@ class Feed extends Component {
         this.setState({ status: resData.status });
       })
       .catch(this.catchError);
-
+    const socket = openSocket('http://localhost:8080', {
+      transports: ['websocket'],
+    });
+    socket.on('posts', data => {
+      if (data.action === 'create') {
+        console.log('New post was created');
+      }
+    });
     this.loadPosts();
   }
 
