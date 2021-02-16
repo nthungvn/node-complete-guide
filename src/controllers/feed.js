@@ -126,6 +126,19 @@ exports.updatePost = async (req, res, next) => {
       post.imageUrl = req.file.path;
     }
     const result = await post.save();
+
+    const updatedPost = { ...result._doc };
+    const creator = {
+      _id: result.creator._id,
+      name: result.creator.name,
+    };
+    updatedPost.creator = creator;
+
+    io().emit('posts', {
+      action: 'update',
+      post: updatedPost,
+    });
+
     res.status(200).json({
       message: 'OK',
       post: result,
