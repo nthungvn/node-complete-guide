@@ -78,12 +78,13 @@ exports.createPost = async (req, res, next) => {
   try {
     const result = await post.save();
 
-    const createdPost = { ...result._doc };
-    const creator = {
-      _id: result.creator._id,
-      name: result.creator.name,
+    const createdPost = {
+      ...result._doc,
+      creator: {
+        _id: req.user._id,
+        name: req.user.name,
+      },
     };
-    createdPost.creator = creator;
 
     io().emit('posts', {
       action: 'create',
@@ -127,12 +128,13 @@ exports.updatePost = async (req, res, next) => {
     }
     const result = await post.save();
 
-    const updatedPost = { ...result._doc };
-    const creator = {
-      _id: result.creator._id,
-      name: result.creator.name,
+    const updatedPost = {
+      ...result._doc,
+      creator: {
+        _id: req.user._id,
+        name: req.user.name,
+      },
     };
-    updatedPost.creator = creator;
 
     io().emit('posts', {
       action: 'update',
