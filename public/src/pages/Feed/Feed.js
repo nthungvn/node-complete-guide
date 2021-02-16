@@ -44,6 +44,8 @@ class Feed extends Component {
     socket.on('posts', data => {
       if (data.action === 'create') {
         this.addPost(data.post);
+      } else if (data.action === 'delete') {
+        this.deletePost(data.postId)
       }
     });
     this.loadPosts();
@@ -93,6 +95,10 @@ class Feed extends Component {
       });
     }
   };
+
+  deletePost = postId => {
+    this.loadPosts();
+  }
 
   statusUpdateHandler = event => {
     event.preventDefault();

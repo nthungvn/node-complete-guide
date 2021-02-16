@@ -144,6 +144,10 @@ exports.deletePost = async (req, res, next) => {
       throwNotFound('No post found');
     }
     await Promise.all([deleteFile(post.imageUrl), post.remove()]);
+    io().emit('posts', {
+      action: 'delete',
+      postId: postId,
+    });
     res.status(200).json({ message: 'Post deleted' });
   } catch (error) {
     next(error);
