@@ -3,7 +3,6 @@ const { validationResult } = require('express-validator');
 const Post = require('../models/post');
 const { deleteFile } = require('../utils/file');
 const { throwNotFound } = require('../utils/error');
-const { io } = require('../socket');
 
 const ITEMS_PER_PAGE = 3;
 
@@ -78,20 +77,6 @@ exports.createPost = async (req, res, next) => {
 
   try {
     const result = await post.save();
-
-    const createdPost = {
-      ...result._doc,
-      creator: {
-        _id: req.user._id,
-        name: req.user.name,
-      },
-    };
-
-    io().emit('posts', {
-      action: 'create',
-      post: createdPost,
-    });
-
     res.status(200).json({
       message: 'OK',
       post: createdPost,
@@ -128,20 +113,6 @@ exports.updatePost = async (req, res, next) => {
       post.imageUrl = req.file.path;
     }
     const result = await post.save();
-
-    const updatedPost = {
-      ...result._doc,
-      creator: {
-        _id: req.user._id,
-        name: req.user.name,
-      },
-    };
-
-    io().emit('posts', {
-      action: 'update',
-      post: updatedPost,
-    });
-
     res.status(200).json({
       message: 'OK',
       post: result,
@@ -160,10 +131,6 @@ exports.deletePost = async (req, res, next) => {
       throwNotFound('No post found');
     }
     await Promise.all([deleteFile(post.imageUrl), post.remove()]);
-    io().emit('posts', {
-      action: 'delete',
-      postId: postId,
-    });
     res.status(200).json({ message: 'Post deleted' });
   } catch (error) {
     next(error);
