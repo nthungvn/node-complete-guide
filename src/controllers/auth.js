@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const { throwNotFound } = require('../utils/error');
 
-exports.postSignup = (req, res, next) => {
+exports.postSignup = async (req, res, next) => {
   const errors = validationResult(req);
 
   const errorMessage = {};
@@ -20,69 +20,61 @@ exports.postSignup = (req, res, next) => {
 
   const { name, email, password } = req.body;
 
-  User.findOne({ email: email })
-    .then((user) => {
-      if (user) {
-        const error = new Error('User existed');
-        error.statusCode = 409;
-        throw error;
-      }
-      return bcrypt.hash(password, 12);
-    })
-    .then((hashPassword) => {
-      const newUser = new User({
-        name: name,
-        email: email,
-        password: hashPassword,
-      });
-      return newUser.save();
-    })
-    .then((result) => {
-      res.status(201).json({
-        message: 'User created',
-        userId: result._id,
-        email: result.email,
-      });
-    })
-    .catch((error) => next(error));
+  try {
+    const user = await User.findOne({ email: email });
+    if (user) {
+      const error = new Error('User existed');
+      error.statusCode = 409;
+      throw error;
+    }
+    const hashPassword = await bcrypt.hash(password, 12);
+    const newUser = new User({
+      name: name,
+      email: email,
+      password: hashPassword,
+    });
+    const result = await newUser.save();
+    res.status(201).json({
+      message: 'User created',
+      userId: result._id,
+      email: result.email,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-exports.postLogin = (req, res, next) => {
+exports.postLogin = async (req, res, next) => {
   const { email, password } = req.body;
 
-  let fetchedUser;
-  User.findOne({ email: email })
-    .then((user) => {
-      if (!user) {
-        throwNotFound('User not found');
-      }
-      fetchedUser = user;
-      return bcrypt.compare(password, user.password);
-    })
-    .then((doMatch) => {
-      if (!doMatch) {
-        const error = new Error('User or password was wrong');
-        error.statusCode = 401;
-        throw error;
-      }
-      return jwt.sign(
-        {
-          userId: fetchedUser._id,
-          email: fetchedUser.email,
-        },
-        'my-secret',
-        {
-          issuer: 'Self',
-          expiresIn: '1h',
-        },
-      );
-    })
-    .then((token) => {
-      res.status(200).json({
-        message: 'OK',
-        userId: fetchedUser._id,
-        token: token,
-      });
-    })
-    .catch((error) => next(error));
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      throwNotFound('User not found');
+    }
+    const doMatch = await bcrypt.compare(password, user.password);
+    if (!doMatch) {
+      const error = new Error('User or password was wrong');
+      error.statusCode = 401;
+      throw error;
+    }
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+      },
+      'my-secret',
+      {
+        issuer: 'Self',
+        expiresIn: '1h',
+      },
+    );
+    res.status(200).json({
+      message: 'OK',
+      userId: user._id,
+      token: token,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
