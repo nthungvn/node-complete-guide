@@ -6,6 +6,7 @@ const multer = require('multer');
 
 const feedRoutes = require('./routes/feed');
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
 const cors = require('./middlewares/cors');
 const authGuard = require('./middlewares/auth-guard');
 const serverError = require('./middlewares/server-error');
@@ -39,6 +40,7 @@ app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/feed', authGuard, feedRoutes);
 app.use('/auth', authRoutes);
+app.use('/user', authGuard, userRoutes);
 app.use(serverError);
 
 mongoose
