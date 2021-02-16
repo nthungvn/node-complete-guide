@@ -1,6 +1,8 @@
 const { validationResult } = require('express-validator');
+
 const Post = require('../models/post');
 const { deleteFile } = require('../utils/file');
+const { throwNotFound } = require('../utils/error');
 
 const ITEMS_PER_PAGE = 3;
 
@@ -31,9 +33,7 @@ exports.getPost = async (req, res, next) => {
       'name email',
     );
     if (!post) {
-      const error = new Error('No post found');
-      error.statusCode = 404;
-      throw error;
+      throwNotFound('No post found');
     }
     res.status(200).json({
       message: 'OK',
@@ -102,9 +102,7 @@ exports.updatePost = async (req, res, next) => {
   try {
     const post = await Post.findOne({ _id: postId, creator: req.user });
     if (!post) {
-      const error = new Error('No post found');
-      error.statusCode = 404;
-      throw error;
+      throwNotFound('No post found');
     }
     post.title = title;
     post.content = content;
@@ -128,9 +126,7 @@ exports.deletePost = async (req, res, next) => {
   try {
     const post = await Post.findOne({ _id: postId, creator: req.user._id });
     if (!post) {
-      const error = new Error('No post found');
-      error.statusCode = 404;
-      throw error;
+      throwNotFound('No post found');
     }
     await Promise.all([deleteFile(post.imageUrl), post.remove()]);
     res.status(200).json({ message: 'Post deleted' });

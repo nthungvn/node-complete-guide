@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
+const { throwNotFound } = require('../utils/error');
 
 exports.postSignup = (req, res, next) => {
   const errors = validationResult(req);
@@ -53,9 +54,7 @@ exports.postLogin = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
-        const error = new Error('User not found');
-        error.statusCode = 404;
-        throw error;
+        throwNotFound('User not found');
       }
       fetchedUser = user;
       return bcrypt.compare(password, user.password);
