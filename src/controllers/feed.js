@@ -79,7 +79,13 @@ exports.createPost = async (req, res, next) => {
     const result = await post.save();
     res.status(200).json({
       message: 'OK',
-      post: createdPost,
+      post: {
+        ...result._doc,
+        creator: {
+          _id: req.user._id,
+          name: req.user.name,
+        },
+      },
     });
   } catch (error) {
     next(error);
