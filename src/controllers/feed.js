@@ -14,7 +14,8 @@ exports.getPosts = async (req, res, next) => {
     const posts = await Post.find()
       .skip((page - 1) * ITEMS_PER_PAGE)
       .limit(ITEMS_PER_PAGE)
-      .populate('creator', 'name email');
+      .populate('creator', 'name email')
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       message: 'OK',
