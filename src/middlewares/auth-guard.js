@@ -6,7 +6,7 @@ const User = require('../models/user');
  * @param {*} res
  * @param {*} next
  */
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   if (req.method === 'OPTIONS') {
     return next();
   }
@@ -26,15 +26,16 @@ module.exports = (req, res, next) => {
   } catch (err) {
     throwUnauthenticated();
   }
-  User.findOne({ email: decodedToken.email })
-    .then((user) => {
-      if (!user) {
-        throwUnauthenticated();
-      }
-      req.user = user;
-      next();
-    })
-    .catch((error) => next(error));
+  try {
+    const user = await User.findOne({ email: decodedToken.email });
+    if (!user) {
+      throwUnauthenticated();
+    }
+    req.user = user;
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 const throwUnauthenticated = () => {
