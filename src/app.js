@@ -3,10 +3,13 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
+const { graphqlHTTP } = require('express-graphql');
 
 const cors = require('./middlewares/cors');
 const authGuard = require('./middlewares/auth-guard');
 const serverError = require('./middlewares/server-error');
+const schema = require("./graphql/schema");
+const resolvers = require("./graphql/resolvers");
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
@@ -35,6 +38,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    rootValue: resolvers,
+    graphiql: true,
+  }),
+);
 app.use(serverError);
 
 mongoose
