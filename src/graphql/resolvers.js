@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 const validator = require('validator').default;
 
 const User = require('../models/user');
@@ -14,7 +16,12 @@ module.exports = {
       errors.push('Your name is missing');
     }
 
-    if (!validator.isLength(password, { min: 5 } && !validator.isAlphanumeric(password))) {
+    if (
+      !validator.isLength(
+        password,
+        { min: 5 } && !validator.isAlphanumeric(password),
+      )
+    ) {
       errors.push('Password need at least 5 characters and Alphanumeric');
     }
 
@@ -46,5 +53,56 @@ module.exports = {
     } catch (error) {
       throw error;
     }
+  },
+
+  login: async (args, req) => {
+    const { email, password } = args;
+    const errors = [];
+    if (!validator.isEmail(email)) {
+      errors.push('Please enter correct email!');
+    }
+    if (
+      !validator.isLength(
+        password,
+        { min: 5 } && !validator.isAlphanumeric(password),
+      )
+    ) {
+      errors.push('Password need at least 5 characters and Alphanumeric');
+    }
+
+    if (errors.length > 0) {
+      const error = new Error('Validation failed');
+      error.statusCode = 422;
+      error.data = errors;
+      throw error;
+    }
+
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      const error = new Error('Not-existed user');
+      error.statusCode = 401;
+      throw error;
+    }
+    const doMatch = await bcrypt.compare(password, user.password);
+    if (!doMatch) {
+      const error = new Error('User or password was wrong');
+      error.statusCode = 401;
+      throw error;
+    }
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+      },
+      'my-secret',
+      {
+        issuer: 'Self',
+        expiresIn: '1h',
+      },
+    );
+    return {
+      userId: user._id,
+      token: token,
+    };
   },
 };
