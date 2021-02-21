@@ -1,10 +1,29 @@
 const bcrypt = require('bcrypt');
+const validator = require('validator').default;
 
 const User = require('../models/user');
 
 module.exports = {
   createUser: async ({ userInput }, req) => {
     const { name, email, password } = userInput;
+    const errors = [];
+    if (!validator.isEmail(email)) {
+      errors.push('Please enter correct email!');
+    }
+    if (!validator.isEmpty(name)) {
+      errors.push('Your name is missing');
+    }
+
+    if (!validator.isLength(password, { min: 5 } && !validator.isAlphanumeric(password))) {
+      errors.push('Password need at least 5 characters and Alphanumeric');
+    }
+
+    if (errors.length > 0) {
+      const error = new Error('Validation failed');
+      error.code = 422;
+      error.data = errors;
+      throw error;
+    }
 
     try {
       const user = await User.findOne({ email: email });
