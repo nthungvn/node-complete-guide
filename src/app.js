@@ -8,8 +8,8 @@ const { graphqlHTTP } = require('express-graphql');
 const cors = require('./middlewares/cors');
 const authGuard = require('./middlewares/auth-guard');
 const serverError = require('./middlewares/server-error');
-const schema = require("./graphql/schema");
-const resolvers = require("./graphql/resolvers");
+const graphqlSchema = require("./graphql/schema");
+const graphqlResolvers = require("./graphql/resolvers");
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
@@ -41,8 +41,8 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use(
   '/graphql',
   graphqlHTTP({
-    schema: schema,
-    rootValue: resolvers,
+    schema: graphqlSchema,
+    rootValue: graphqlResolvers,
     graphiql: true,
   }),
 );

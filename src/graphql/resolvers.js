@@ -1,5 +1,8 @@
 module.exports = {
   hello() {
-    return 'Hello world';
+    return {
+      text: 'Hello world',
+      views: 12,
+    };
   },
 };
