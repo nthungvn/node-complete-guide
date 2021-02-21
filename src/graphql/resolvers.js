@@ -10,7 +10,7 @@ module.exports = {
     if (!validator.isEmail(email)) {
       errors.push('Please enter correct email!');
     }
-    if (!validator.isEmpty(name)) {
+    if (validator.isEmpty(name)) {
       errors.push('Your name is missing');
     }
 
@@ -20,7 +20,7 @@ module.exports = {
 
     if (errors.length > 0) {
       const error = new Error('Validation failed');
-      error.code = 422;
+      error.statusCode = 422;
       error.data = errors;
       throw error;
     }

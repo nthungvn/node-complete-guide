@@ -8,8 +8,8 @@ const { graphqlHTTP } = require('express-graphql');
 const cors = require('./middlewares/cors');
 const authGuard = require('./middlewares/auth-guard');
 const serverError = require('./middlewares/server-error');
-const graphqlSchema = require("./graphql/schema");
-const graphqlResolvers = require("./graphql/resolvers");
+const graphqlSchema = require('./graphql/schema');
+const graphqlResolvers = require('./graphql/resolvers');
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
@@ -44,6 +44,16 @@ app.use(
     schema: graphqlSchema,
     rootValue: graphqlResolvers,
     graphiql: true,
+    customFormatErrorFn: (error) => {
+      if (!error.originalError) {
+        return error;
+      }
+      return {
+        message: error.message || 'Unexpected error',
+        statusCode: error.originalError.statusCode || 500,
+        data: error.originalError.data,
+      };
+    },
   }),
 );
 app.use(serverError);
