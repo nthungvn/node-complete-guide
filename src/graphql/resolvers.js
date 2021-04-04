@@ -151,14 +151,12 @@ module.exports = {
     try {
       const result = await post.save();
       req.user.posts.push(result);
+      await req.user.save();
       return {
         ...result._doc,
+        _id: result._id.toString(),
         createdAt: result.createdAt.toISOString(),
-        updatedAt: result.updatedAt.toISOString(),
-        creator: {
-          _id: req.user._id,
-          name: req.user.name,
-        },
+        updatedAt: result.updatedAt.toISOString()
       };
     } catch (error) {
       throw error;
