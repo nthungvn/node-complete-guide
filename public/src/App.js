@@ -89,7 +89,6 @@ class App extends Component {
           throw new Error('Validation failed.');
         }
         if (resData.errors) {
-          console.log('Error!');
           throw new Error('Could not authenticate you!');
         }
         const authData = resData.data.login;
@@ -153,7 +152,6 @@ class App extends Component {
           );
         }
         if (resData.errors) {
-          console.log('Error!');
           throw new Error('Creating a user failed!');
         }
         this.setState({ isAuth: false, authLoading: false });
