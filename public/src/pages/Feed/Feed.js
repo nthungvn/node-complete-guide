@@ -123,32 +123,42 @@ class Feed extends Component {
       editLoading: true
     });
     // Set up data (with image!)
-    let url = 'http://localhost:8080/feed/posts';
-    let method = 'POST';
+    let graphqlQuery;
     if (this.state.editPost) {
-      url = 'http://localhost:8080/feed/posts/' + this.state.editPost._id;
-      method = 'PUT';
+      // url = 'http://localhost:8080/feed/posts/' + this.state.editPost._id;
+    } else {
+      graphqlQuery = {
+        query: `
+          mutation {
+            createPost(postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "DummyUrl"}) {
+              _id title content creator { _id name } createdAt imageUrl
+            }
+          }
+        `
+      };
     }
 
-    const formData = new FormData();
-    formData.append("title", postData.title);
-    formData.append("content", postData.content);
-    formData.append("image", postData.image);
-
-    fetch(url, {
+    fetch('http://localhost:8080/graphql', {
       headers: {
         authorization: 'Bearer ' + this.props.token,
+        'Content-Type': 'application/json',
       },
-      method: method,
-      body: formData,
+      method: 'POST',
+      body: JSON.stringify(graphqlQuery),
     })
       .then(res => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Creating or editing a post failed!');
-        }
         return res.json();
       })
       .then(resData => {
+        console.log(resData);
+        if (resData.errors && resData.errors[0].statusCode === 401) {
+          throw new Error('Validation failed.');
+        }
+        if (resData.errors) {
+          console.log('Error!');
+          throw new Error('Could not authenticate you!');
+        }
+
         const post = {
           _id: resData.post._id,
           title: resData.post.title,

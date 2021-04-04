@@ -150,17 +150,14 @@ module.exports = {
 
     try {
       const result = await post.save();
-      req.user.push(result);
+      req.user.posts.push(result);
       return {
-        message: 'OK',
-        post: {
-          ...result._doc,
-          createdAt: result.createdAt.toISOString(),
-          updatedAt: result.updatedAt.toISOString(),
-          creator: {
-            _id: req.user._id,
-            name: req.user.name,
-          },
+        ...result._doc,
+        createdAt: result.createdAt.toISOString(),
+        updatedAt: result.updatedAt.toISOString(),
+        creator: {
+          _id: req.user._id,
+          name: req.user.name,
         },
       };
     } catch (error) {
