@@ -159,12 +159,14 @@ class Feed extends Component {
           throw new Error('Could not authenticate you!');
         }
 
+        const createdPost = resData.data.createPost;
+
         const post = {
-          _id: resData.post._id,
-          title: resData.post.title,
-          content: resData.post.content,
-          creator: resData.post.creator,
-          createdAt: resData.post.createdAt,
+          _id: createdPost._id,
+          title: createdPost.title,
+          content: createdPost.content,
+          creator: createdPost.creator,
+          createdAt: createdPost.createdAt,
         };
         this.setState(prevState => {
           let updatedPosts = [...prevState.posts];
