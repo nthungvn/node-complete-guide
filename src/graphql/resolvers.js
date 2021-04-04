@@ -181,10 +181,16 @@ module.exports = {
         .sort({ createdAt: -1 });
 
       return {
-        posts: posts,
+        posts: posts.map((post => ({
+          ...post._doc,
+          _id: post._id.toString(),
+          createdAt: post.createdAt.toISOString(),
+          updatedAt: post.updatedAt.toISOString(),
+        }))),
         totalPosts: totalItems,
       };
     } catch (error) {
+      throw error;
       next(error);
     }
   },

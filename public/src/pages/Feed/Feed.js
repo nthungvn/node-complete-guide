@@ -172,7 +172,7 @@ class Feed extends Component {
           throw new Error('Validation failed.');
         }
         if (resData.errors) {
-          throw new Error('Could not authenticate you!');
+          throw new Error('Failed to update/create post');
         }
 
         const createdPost = resData.data.createPost;
