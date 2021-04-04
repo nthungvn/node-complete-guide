@@ -56,7 +56,7 @@ module.exports = {
     }
   },
 
-  login: async (args, req) => {
+  login: async (args, _) => {
     const { email, password } = args;
     const errors = [];
     if (!validator.isEmail(email)) {
@@ -156,10 +156,36 @@ module.exports = {
         ...result._doc,
         _id: result._id.toString(),
         createdAt: result.createdAt.toISOString(),
-        updatedAt: result.updatedAt.toISOString()
+        updatedAt: result.updatedAt.toISOString(),
       };
     } catch (error) {
       throw error;
+    }
+  },
+
+  getPosts: async (args, req) => {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated');
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const page = args.page || 1;
+    const ITEMS_PER_PAGE = 3;
+    try {
+      const totalItems = await Post.countDocuments();
+      const posts = await Post.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE)
+        .populate('creator', 'name email')
+        .sort({ createdAt: -1 });
+
+      return {
+        posts: posts,
+        totalPosts: totalItems,
+      };
+    } catch (error) {
+      next(error);
     }
   },
 };
