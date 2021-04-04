@@ -53,24 +53,41 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('http://localhost:8080/feed/posts?page=' + page, {
+    const graphqlQuery = {
+      query: `
+        query {
+          getPosts(page: ${page}) {
+            totalPosts posts { _id content creator { name } createdAt updatedAt }
+          }
+        }
+      `
+    };
+    fetch('http://localhost:8080/graphql', {
+      method: 'POST',
       headers: {
         authorization: 'Bearer ' + this.props.token,
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify(graphqlQuery),
     })
       .then(res => {
-        if (res.status !== 200) {
-          throw new Error('Failed to fetch posts.');
-        }
         return res.json();
       })
       .then(resData => {
+        console.log(resData);
+        if (resData.errors && resData.errors[0].statusCode === 401) {
+          throw new Error('Validation failed.');
+        }
+        if (resData.errors) {
+          throw new Error('Fetching posts failed');
+        }
+        const postsData = resData.data.getPosts;
         this.setState({
-          posts: resData.posts.map(post => ({
+          posts: postsData.posts.map(post => ({
             ...post,
             imagePath: post.imageUrl,
           })),
-          totalPosts: resData.totalItems,
+          totalPosts: postsData.totalPosts,
           postsLoading: false,
         });
       })
@@ -155,7 +172,6 @@ class Feed extends Component {
           throw new Error('Validation failed.');
         }
         if (resData.errors) {
-          console.log('Error!');
           throw new Error('Could not authenticate you!');
         }
 
