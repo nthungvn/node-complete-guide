@@ -13,7 +13,8 @@ module.exports = async (req, res, next) => {
 
   const bearer = req.headers.authorization;
   if (!bearer) {
-    throwUnauthenticated();
+    req.isAuth = false;
+    return next();
   }
   const token = bearer.split(' ')[1];
 
@@ -24,22 +25,19 @@ module.exports = async (req, res, next) => {
       throw new Error();
     }
   } catch (err) {
-    throwUnauthenticated();
+    req.isAuth = false;
+    return next();
   }
   try {
     const user = await User.findOne({ email: decodedToken.email });
     if (!user) {
-      throwUnauthenticated();
+      req.isAuth = false;
+      return next();
     }
     req.user = user;
+    req.isAuth = true;
     next();
   } catch (error) {
     next(error);
   }
-};
-
-const throwUnauthenticated = () => {
-  const error = new Error('Not Authenticated');
-  error.statusCode = 401;
-  throw error;
 };

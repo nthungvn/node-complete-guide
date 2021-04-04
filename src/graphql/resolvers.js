@@ -108,6 +108,12 @@ module.exports = {
   },
 
   createPost: async ({ postInput }, req) => {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated');
+      error.statusCode = 401;
+      throw error;
+    }
+
     const { title, content, imageUrl } = postInput;
 
     const errors = [];
@@ -144,6 +150,7 @@ module.exports = {
 
     try {
       const result = await post.save();
+      req.user.push(result);
       return {
         message: 'OK',
         post: {
