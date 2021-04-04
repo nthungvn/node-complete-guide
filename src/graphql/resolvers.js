@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator').default;
 
 const User = require('../models/user');
+const Post = require('../models/post');
 
 module.exports = {
   createUser: async ({ userInput }, req) => {
@@ -104,5 +105,59 @@ module.exports = {
       userId: user._id,
       token: token,
     };
+  },
+
+  createPost: async ({ postInput }, req) => {
+    const { title, content, imageUrl } = postInput;
+
+    const errors = [];
+
+    if (!validator.isLength(title, { min: 5 })) {
+      errors.push('Content need at least 5 characters');
+    }
+
+    if (!validator.isLength(content, { min: 5 })) {
+      errors.push('Content need at least 5 characters');
+    }
+
+    if (errors.length > 0) {
+      const error = new Error('Validation failed');
+      error.statusCode = 422;
+      error.data = errors;
+      throw error;
+    }
+
+    // if (!req.file) {
+    //   const error = new Error('Validation failed, Image is required');
+    //   error.statusCode = 422;
+    //   throw error;
+    // }
+
+    // const imageUrl = req.file.path;
+
+    const post = new Post({
+      title: title,
+      content: content,
+      imageUrl: imageUrl,
+      creator: req.user,
+    });
+
+    try {
+      const result = await post.save();
+      return {
+        message: 'OK',
+        post: {
+          ...result._doc,
+          createdAt: result.createdAt.toISOString(),
+          updatedAt: result.updatedAt.toISOString(),
+          creator: {
+            _id: req.user._id,
+            name: req.user.name,
+          },
+        },
+      };
+    } catch (error) {
+      throw error;
+    }
   },
 };
