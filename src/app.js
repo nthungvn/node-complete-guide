@@ -1,12 +1,10 @@
 const express = require('express');
 const path = require('path');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const { graphqlHTTP } = require('express-graphql');
 
 const cors = require('./middlewares/cors');
-const authGuard = require('./middlewares/auth-guard');
 const serverError = require('./middlewares/server-error');
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolvers = require('./graphql/resolvers');
@@ -34,8 +32,8 @@ const fileFilter = (req, file, cb) => {
 const app = express();
 
 app.use(multer({ storage: storage, fileFilter: fileFilter }).single('image'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use(
@@ -60,7 +58,7 @@ app.use(serverError);
 
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((result) => {
+  .then((_) => {
     console.log('Mongo connected');
     app.listen(process.env.PORT || 3000);
   })
