@@ -181,12 +181,12 @@ module.exports = {
         .sort({ createdAt: -1 });
 
       return {
-        posts: posts.map((post => ({
+        posts: posts.map((post) => ({
           ...post._doc,
           _id: post._id.toString(),
           createdAt: post.createdAt.toISOString(),
           updatedAt: post.updatedAt.toISOString(),
-        }))),
+        })),
         totalPosts: totalItems,
       };
     } catch (error) {
@@ -216,6 +216,58 @@ module.exports = {
         ...post._doc,
         createdAt: post.createdAt.toISOString(),
         updatedAt: post.updatedAt.toISOString(),
+      };
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updatePost: async ({ postId, postInput }, req) => {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated');
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const { title, content, imageUrl } = postInput;
+
+    const errors = [];
+
+    if (!validator.isLength(title, { min: 5 })) {
+      errors.push('Content need at least 5 characters');
+    }
+
+    if (!validator.isLength(content, { min: 5 })) {
+      errors.push('Content need at least 5 characters');
+    }
+
+    if (errors.length > 0) {
+      const error = new Error('Validation failed');
+      error.statusCode = 422;
+      error.data = errors;
+      throw error;
+    }
+
+    try {
+      const post = await Post.findOne({ _id: postId, creator: req.user });
+      if (!post) {
+        const error = new Error('No post found');
+        error.statusCode = 404;
+        throw error;
+      }
+      post.title = title;
+      post.content = content;
+      if (post.imageUrl !== 'undefined') {
+        post.imageUrl = imageUrl;
+      }
+
+      const updatedPost = await post.save();
+      return {
+        ...updatedPost._doc,
+        _id: updatedPost._id.toString(),
+        createdAt: updatedPost.createdAt.toISOString(),
+        updatedAt: updatedPost.updatedAt.toISOString(),
+        creator: req.user,
       };
     } catch (error) {
       throw error;

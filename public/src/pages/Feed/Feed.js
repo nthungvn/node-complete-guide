@@ -156,18 +156,25 @@ class Feed extends Component {
       .then((res => res.json()))
       .then((data) => {
         const imageUrl = data.imagePath;
-        // Set up data (with image!)
         let graphqlQuery;
         if (this.state.editPost) {
-          // url = 'http://localhost:8080/feed/posts/' + this.state.editPost._id;
+          graphqlQuery = {
+            query: `
+              mutation {
+                updatePost(postId: "${this.state.editPost._id}", postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "${imageUrl}"}) {
+                  _id title content creator { _id name } createdAt imageUrl
+                }
+              }
+          `
+          };
         } else {
           graphqlQuery = {
             query: `
-            mutation {
-              createPost(postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "${imageUrl}"}) {
-                _id title content creator { _id name } createdAt imageUrl
+              mutation {
+                createPost(postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "${imageUrl}"}) {
+                  _id title content creator { _id name } createdAt imageUrl
+                }
               }
-            }
           `
           };
         }
@@ -192,15 +199,20 @@ class Feed extends Component {
           throw new Error('Failed to update/create post');
         }
 
-        const createdPost = resData.data.createPost;
+        let returnedPost;
+        if (this.state.editPost) {
+          returnedPost = resData.data.updatePost;
+        } else {
+          returnedPost = resData.data.createPost;
+        }
 
         const post = {
-          _id: createdPost._id,
-          title: createdPost.title,
-          content: createdPost.content,
-          creator: createdPost.creator,
-          createdAt: createdPost.createdAt,
-          imagePath: createdPost.imageUrl,
+          _id: returnedPost._id,
+          title: returnedPost.title,
+          content: returnedPost.content,
+          creator: returnedPost.creator,
+          createdAt: returnedPost.createdAt,
+          imagePath: returnedPost.imageUrl,
         };
         this.setState(prevState => {
           let updatedPosts = [...prevState.posts];

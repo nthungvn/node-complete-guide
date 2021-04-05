@@ -47,7 +47,7 @@ app.put('/post-image', (req, res, _) => {
   }
 
   if (!req.file) {
-    res.json({ message: 'No image was uploaded!' });
+    return res.json({ message: 'No image was uploaded!' });
   }
   if (req.body.oldImagePath) {
     deleteFile(req.body.oldImagePath);
