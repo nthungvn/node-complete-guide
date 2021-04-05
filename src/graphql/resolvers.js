@@ -5,6 +5,7 @@ const validator = require('validator').default;
 
 const User = require('../models/user');
 const Post = require('../models/post');
+const { deleteFile } = require('../utils/file');
 
 module.exports = {
   createUser: async ({ userInput }, req) => {
@@ -269,6 +270,30 @@ module.exports = {
         updatedAt: updatedPost.updatedAt.toISOString(),
         creator: req.user,
       };
+    } catch (error) {
+      throw error;
+    }
+  },
+  deletePost: async ({ postId }, req) => {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated');
+      error.statusCode = 401;
+      throw error;
+    }
+
+    try {
+      const post = await Post.findOne({ _id: postId, creator: req.user._id });
+      if (!post) {
+        const error = new Error('No post found');
+        error.statusCode = 404;
+        throw error;
+      }
+      req.user.posts.pull(post._id);
+      await Promise.all([deleteFile(post.imageUrl), post.remove()]).catch(
+        (error) => console.log(error),
+        req.user.save(),
+      );
+      return 'Post deleted';
     } catch (error) {
       throw error;
     }
