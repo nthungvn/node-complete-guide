@@ -9,6 +9,7 @@ const serverError = require('./middlewares/server-error');
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolvers = require('./graphql/resolvers');
 const auth = require('./middlewares/auth');
+const { deleteFile } = require('./utils/file');
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
@@ -38,6 +39,24 @@ app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use(auth);
+app.put('/post-image', (req, res, _) => {
+  if (!req.isAuth) {
+    const error = new Error('Not authenticated');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (!req.file) {
+    res.json({ message: 'No image was uploaded!' });
+  }
+  if (req.body.oldImagePath) {
+    deleteFile(req.body.oldImagePath);
+  }
+  res.status(201).json({
+    message: 'Image was uploaded!',
+    imagePath: req.file.path
+  });
+});
 app.use(
   '/graphql',
   graphqlHTTP({

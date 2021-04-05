@@ -139,30 +139,47 @@ class Feed extends Component {
     this.setState({
       editLoading: true
     });
-    // Set up data (with image!)
-    let graphqlQuery;
+
+    const formData = new FormData();
+    formData.append('image', postData.image);
     if (this.state.editPost) {
-      // url = 'http://localhost:8080/feed/posts/' + this.state.editPost._id;
-    } else {
-      graphqlQuery = {
-        query: `
-          mutation {
-            createPost(postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "DummyUrl"}) {
-              _id title content creator { _id name } createdAt imageUrl
-            }
-          }
-        `
-      };
+      formData.append('oldImagePath', this.state.editPost.imagePath);
     }
 
-    fetch('http://localhost:8080/graphql', {
-      headers: {
-        authorization: 'Bearer ' + this.props.token,
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify(graphqlQuery),
-    })
+    fetch('http://localhost:8080/post-image', {
+        method: 'PUT',
+        headers: {
+          authorization: 'Bearer ' + this.props.token,
+        },
+        body: formData,
+      })
+      .then((res => res.json()))
+      .then((data) => {
+        const imageUrl = data.imagePath;
+        // Set up data (with image!)
+        let graphqlQuery;
+        if (this.state.editPost) {
+          // url = 'http://localhost:8080/feed/posts/' + this.state.editPost._id;
+        } else {
+          graphqlQuery = {
+            query: `
+            mutation {
+              createPost(postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "${imageUrl}"}) {
+                _id title content creator { _id name } createdAt imageUrl
+              }
+            }
+          `
+          };
+        }
+        return fetch('http://localhost:8080/graphql', {
+          headers: {
+            authorization: 'Bearer ' + this.props.token,
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify(graphqlQuery),
+        });
+      })
       .then(res => {
         return res.json();
       })
@@ -211,7 +228,7 @@ class Feed extends Component {
           error: err,
         });
       });
-  };
+    };
 
   statusInputChangeHandler = (input, value) => {
     this.setState({ status: value });
