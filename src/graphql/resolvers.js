@@ -258,7 +258,7 @@ module.exports = {
       }
       post.title = title;
       post.content = content;
-      if (post.imageUrl !== 'undefined') {
+      if (imageUrl !== 'undefined') {
         post.imageUrl = imageUrl;
       }
 
