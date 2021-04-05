@@ -298,4 +298,15 @@ module.exports = {
       throw error;
     }
   },
+  getUser: async (_, req) => {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated');
+      error.statusCode = 401;
+      throw error;
+    }
+    return {
+      ...req.user._doc,
+      _id: req.user._doc._id.toString()
+    };
+  },
 };
