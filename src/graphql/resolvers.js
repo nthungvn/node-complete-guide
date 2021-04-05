@@ -172,7 +172,7 @@ module.exports = {
     }
 
     const page = args.page || 1;
-    const ITEMS_PER_PAGE = 3;
+    const ITEMS_PER_PAGE = 2;
     try {
       const totalItems = await Post.countDocuments();
       const posts = await Post.find()
