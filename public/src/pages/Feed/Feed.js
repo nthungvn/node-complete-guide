@@ -57,7 +57,7 @@ class Feed extends Component {
       query: `
         query {
           getPosts(page: ${page}) {
-            totalPosts posts { _id content title creator { name } createdAt updatedAt }
+            totalPosts posts { _id content title creator { name } imageUrl createdAt updatedAt }
           }
         }
       `
@@ -200,6 +200,7 @@ class Feed extends Component {
           content: createdPost.content,
           creator: createdPost.creator,
           createdAt: createdPost.createdAt,
+          imagePath: createdPost.imageUrl,
         };
         this.setState(prevState => {
           let updatedPosts = [...prevState.posts];

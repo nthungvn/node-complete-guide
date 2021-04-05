@@ -191,7 +191,34 @@ module.exports = {
       };
     } catch (error) {
       throw error;
-      next(error);
+    }
+  },
+
+  getPost: async ({ postId }, req) => {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated');
+      error.statusCode = 401;
+      throw error;
+    }
+
+    try {
+      const post = await Post.findOne({ _id: postId }).populate(
+        'creator',
+        'name email',
+      );
+      if (!post) {
+        const error = new Error('No post found');
+        error.statusCode = 404;
+        throw error;
+      }
+      return {
+        _id: post._id.toString(),
+        ...post._doc,
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString(),
+      };
+    } catch (error) {
+      throw error;
     }
   },
 };
