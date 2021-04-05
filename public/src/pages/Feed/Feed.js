@@ -112,22 +112,32 @@ class Feed extends Component {
 
   statusUpdateHandler = event => {
     event.preventDefault();
-    fetch('http://localhost:8080/user/status', {
-      method: 'PATCH',
+    const graphqlQuery = {
+      query: `
+        mutation {
+          updateUserStatus(status: "${this.state.status}")
+        }
+      `,
+    };
+    fetch('http://localhost:8080/graphql', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         authorization: 'Bearer ' + this.props.token,
       },
-      body: JSON.stringify({ status: this.state.status }),
+      body: JSON.stringify(graphqlQuery),
     })
       .then(res => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Can't update status!");
-        }
         return res.json();
       })
       .then(resData => {
         console.log(resData);
+        if (resData.errors && resData.errors[0].statusCode === 401) {
+          throw new Error('Login failed.');
+        }
+        if (resData.errors) {
+          throw new Error('Failed to update status');
+        }
       })
       .catch(this.catchError);
   };

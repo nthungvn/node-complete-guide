@@ -309,4 +309,18 @@ module.exports = {
       _id: req.user._doc._id.toString()
     };
   },
+  updateUserStatus: async ({ status }, req) => {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated');
+      error.statusCode = 401;
+      throw error;
+    }
+    req.user.status = status;
+    try {
+      await req.user.save();
+      return 'Status updated';
+    } catch (error) {
+      throw error;
+    }
+  },
 };
