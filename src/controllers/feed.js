@@ -1,13 +1,14 @@
-const { validationResult } = require('express-validator');
+const validator = require('validator').default;
 
 const Post = require('../models/post');
 const { deleteFile } = require('../utils/file');
 const { throwNotFound } = require('../utils/error');
+const {checkAuthenticate} = require('../utils/auth');
 
-const ITEMS_PER_PAGE = 3;
-
-exports.getPosts = async (req, res, next) => {
-  const page = req.query.page || 1;
+exports.getPosts = async (args, req) => {
+  checkAuthenticate(req);
+  const page = args.page || 1;
+  const ITEMS_PER_PAGE = 2;
   try {
     const totalItems = await Post.countDocuments();
     const posts = await Post.find()
@@ -16,19 +17,22 @@ exports.getPosts = async (req, res, next) => {
       .populate('creator', 'name email')
       .sort({ createdAt: -1 });
 
-    res.status(200).json({
-      message: 'OK',
-      totalItems: totalItems,
-      posts: posts,
-    });
+    return {
+      posts: posts.map((post) => ({
+        ...post._doc,
+        _id: post._id.toString(),
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString(),
+      })),
+      totalPosts: totalItems,
+    };
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 
-exports.getPost = async (req, res, next) => {
-  const { postId } = req.params;
-
+exports.getPost = async ({ postId }, req) => {
+  checkAuthenticate(req);
   try {
     const post = await Post.findOne({ _id: postId }).populate(
       'creator',
@@ -37,36 +41,37 @@ exports.getPost = async (req, res, next) => {
     if (!post) {
       throwNotFound('No post found');
     }
-    res.status(200).json({
-      message: 'OK',
-      post: post,
-    });
+    return {
+      _id: post._id.toString(),
+      ...post._doc,
+      createdAt: post.createdAt.toISOString(),
+      updatedAt: post.updatedAt.toISOString(),
+    };
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 
-exports.createPost = async (req, res, next) => {
-  const { title, content } = req.body;
+exports.createPost = async ({ postInput }, req) => {
+  checkAuthenticate(req);
+  const { title, content, imageUrl } = postInput;
 
-  const errors = validationResult(req);
+  const errors = [];
 
-  if (!errors.isEmpty()) {
-    const errorMessages = {};
-    errors.array().forEach((error) => (errorMessages[error.param] = error.msg));
-    const error = new Error('Validation failed, data input are incorrect');
-    error.data = errorMessages;
-    error.statusCode = 422;
-    throw error;
+  if (!validator.isLength(title, { min: 5 })) {
+    errors.push('Content need at least 5 characters');
   }
 
-  if (!req.file) {
-    const error = new Error('Validation failed, Image is required');
-    error.statusCode = 422;
-    throw error;
+  if (!validator.isLength(content, { min: 5 })) {
+    errors.push('Content need at least 5 characters');
   }
 
-  const imageUrl = req.file.path;
+  if (errors.length > 0) {
+    const error = new Error('Validation failed');
+    error.statusCode = 422;
+    error.data = errors;
+    throw error;
+  }
 
   const post = new Post({
     title: title,
@@ -77,33 +82,37 @@ exports.createPost = async (req, res, next) => {
 
   try {
     const result = await post.save();
-    res.status(200).json({
-      message: 'OK',
-      post: {
-        ...result._doc,
-        creator: {
-          _id: req.user._id,
-          name: req.user.name,
-        },
-      },
-    });
+    req.user.posts.push(result);
+    await req.user.save();
+    return {
+      ...result._doc,
+      _id: result._id.toString(),
+      createdAt: result.createdAt.toISOString(),
+      updatedAt: result.updatedAt.toISOString(),
+    };
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 
-exports.updatePost = async (req, res, next) => {
-  const { postId } = req.params;
-  const { title, content, image } = req.body;
+exports.updatePost = async ({ postId, postInput }, req) => {
+  checkAuthenticate(req);
+  const { title, content, imageUrl } = postInput;
 
-  const errors = validationResult(req);
+  const errors = [];
 
-  if (!errors.isEmpty()) {
-    const errorMessages = {};
-    errors.array().forEach((error) => (errorMessages[error.param] = error.msg));
-    const error = new Error('Validation failed, data input are incorrect');
-    error.data = errorMessages;
+  if (!validator.isLength(title, { min: 5 })) {
+    errors.push('Content need at least 5 characters');
+  }
+
+  if (!validator.isLength(content, { min: 5 })) {
+    errors.push('Content need at least 5 characters');
+  }
+
+  if (errors.length > 0) {
+    const error = new Error('Validation failed');
     error.statusCode = 422;
+    error.data = errors;
     throw error;
   }
 
@@ -114,31 +123,37 @@ exports.updatePost = async (req, res, next) => {
     }
     post.title = title;
     post.content = content;
-    if (req.file) {
-      deleteFile(post.imageUrl);
-      post.imageUrl = req.file.path;
+    if (imageUrl !== 'undefined') {
+      post.imageUrl = imageUrl;
     }
-    const result = await post.save();
-    res.status(200).json({
-      message: 'OK',
-      post: result,
-    });
+
+    const updatedPost = await post.save();
+    return {
+      ...updatedPost._doc,
+      _id: updatedPost._id.toString(),
+      createdAt: updatedPost.createdAt.toISOString(),
+      updatedAt: updatedPost.updatedAt.toISOString(),
+      creator: req.user,
+    };
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
 
-exports.deletePost = async (req, res, next) => {
-  const { postId } = req.params;
-
+exports.deletePost = async ({ postId }, req) => {
+  checkAuthenticate(req);
   try {
     const post = await Post.findOne({ _id: postId, creator: req.user._id });
     if (!post) {
       throwNotFound('No post found');
     }
-    await Promise.all([deleteFile(post.imageUrl), post.remove()]);
-    res.status(200).json({ message: 'Post deleted' });
+    req.user.posts.pull(post._id);
+    await Promise.all([deleteFile(post.imageUrl), post.remove()]).catch(
+      (error) => console.log(error),
+      req.user.save(),
+    );
+    return 'Post deleted';
   } catch (error) {
-    next(error);
+    throw error;
   }
 };

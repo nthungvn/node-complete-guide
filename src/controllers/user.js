@@ -1,17 +1,21 @@
-const User = require('../models/user');
 
-exports.getUserStatus = (req, res, next) => {
-  res.status('200').json({ status: req.user.status });
+const {checkAuthenticate} = require('../utils/auth');
+
+exports.getUser = async (_, req) => {
+  checkAuthenticate(req);
+  return {
+    ...req.user._doc,
+    _id: req.user._doc._id.toString()
+  };
 };
 
-exports.updateUserStatus = async (req, res, next) => {
-  const { status } = req.body;
-
+exports.updateUserStatus = async ({ status }, req) => {
+  checkAuthenticate(req);
   req.user.status = status;
   try {
     await req.user.save();
-    res.status('200').json({ message: 'Status updated' });
+    return 'Status updated';
   } catch (error) {
-    next(error);
+    throw error;
   }
 };
