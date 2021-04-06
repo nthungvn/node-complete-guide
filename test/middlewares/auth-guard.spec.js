@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const { describe } = require('mocha');
 const jwt = require('jsonwebtoken');
-
+const sinon = require('sinon');
 
 const User = require('../../src/models/user');
 const isAuthMiddleware = require('../../src/middlewares/auth-guard');
@@ -41,16 +41,12 @@ describe('Auth guard middleware', () => {
         authorization: 'Bearer valid_token',
       },
     };
-    jwt.verify = () => {
-      return {
-        email: 'valid_id',
-      };
-    };
-    User.findOne = () => {
-      return {}
-    }
+    const verify = sinon.stub(jwt, 'verify').returns({ email: 'valid_id' });
+    const findOne = sinon.stub(User, 'findOne').returns({ email: 'email' });
 
     await isAuthMiddleware(req, {}, () => {});
+    verify.restore();
+    findOne.restore();
     expect(req).to.have.property('user');
   });
 
