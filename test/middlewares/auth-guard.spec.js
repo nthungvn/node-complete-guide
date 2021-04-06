@@ -47,6 +47,7 @@ describe('Auth guard middleware', () => {
     await isAuthMiddleware(req, {}, () => {});
     verify.restore();
     findOne.restore();
+    expect(verify.called).to.be.true;
     expect(req).to.have.property('user');
   });
 
