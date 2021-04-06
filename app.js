@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const https = require('https');
 const mongoose = require('mongoose');
 const express = require('express');
 const multer = require('multer');
@@ -25,6 +26,9 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: 'sessions',
 });
+
+const privateKey = fs.readFileSync(path.join(__dirname, 'server.key'));
+const certificate = fs.readFileSync(path.join(__dirname, 'server.cert'));
 
 const multerStorage = multer.diskStorage({
   destination: 'uploads/',
@@ -97,6 +101,15 @@ mongoose
   })
   .then(() => {
     console.log('Connected to MongoDB');
+    // https
+    //   .createServer(
+    //     {
+    //       key: privateKey,
+    //       cert: certificate,
+    //     },
+    //     app,
+    //   )
+    //   .listen(process.env.PORT || 3000);
     app.listen(process.env.PORT || 3000);
   })
   .catch((err) => {
