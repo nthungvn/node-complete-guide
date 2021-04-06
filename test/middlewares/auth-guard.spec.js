@@ -27,4 +27,27 @@ describe('Auth guard middleware', () => {
       expect(error.message).to.equal('Not Authenticated');
     }
   });
+
+  it('should throw an error if the token cannot be verified', async () => {
+    const req = {
+      headers: {
+        authorization: 'Bearer wrong_token',
+      },
+    };
+    try {
+      await isAuthMiddleware(req, {}, () => {});
+    } catch (error) {
+      expect(error.message).to.equal('Not Authenticated');
+    }
+  });
+
+  it('should get the userId if the token is valid', async () => {
+    const req = {
+      headers: {
+        authorization: 'Bearer valid_token',
+      },
+    };
+    await isAuthMiddleware(req, {}, () => {});
+    expect(req).to.have.property('userId');
+  });
 });
