@@ -7,6 +7,8 @@ const session = require('express-session');
 const csrf = require('csurf');
 const flash = require('connect-flash')();
 const MongoDBStore = require('connect-mongodb-session')(session);
+const helmet = require('helmet');
+const compression = require('compression');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -42,12 +44,21 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+const shouldCompress = (req, res) => {
+  if (req.headers['x-no-compression']) {
+    return false;
+  }
+  return compression.filter(req, res);
+};
+
 const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet());
+app.use(compression({ filter: shouldCompress }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(
