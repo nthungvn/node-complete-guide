@@ -1,7 +1,7 @@
 const path = require('path');
+const fs = require('fs');
 const mongoose = require('mongoose');
 const express = require('express');
-const bodyParser = require('body-parser');
 const multer = require('multer');
 const session = require('express-session');
 const csrf = require('csurf');
@@ -9,6 +9,7 @@ const flash = require('connect-flash')();
 const MongoDBStore = require('connect-mongodb-session')(session);
 const helmet = require('helmet');
 const compression = require('compression');
+const morgan = require('morgan');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -51,6 +52,11 @@ const shouldCompress = (req, res) => {
   return compression.filter(req, res);
 };
 
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' },
+);
+
 const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
@@ -58,6 +64,7 @@ app.set('views', 'views');
 
 app.use(helmet());
 app.use(compression({ filter: shouldCompress }));
+app.use(morgan('combined', { stream: accessLogStream }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
