@@ -76,6 +76,8 @@ exports.createPost = async (req, res, next) => {
 
   try {
     const result = await post.save();
+    req.user.posts.push(post);
+    await req.user.save();
     res.status(200).json({
       message: 'OK',
       post: result,
