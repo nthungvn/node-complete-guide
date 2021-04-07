@@ -24,7 +24,6 @@ describe('Auth Controller - Login', () => {
     expect(thrown.statusCode).to.equal(500);
   });
 });
-// const validationResult = sinon.stub(expressValidator, 'validationResult').returns([]);
 
 const next = (error) => {
   error.statusCode = error.statusCode || 500;
