@@ -1,4 +1,4 @@
-const { describe, it } = require('mocha');
+const { describe, it, before, after } = require('mocha');
 const { expect } = require('chai');
 const mongoose = require('mongoose');
 
@@ -6,12 +6,20 @@ const User = require('../../src/models/user');
 const userController = require('../../src/controllers/user');
 
 describe('User Controller - Update User Status', () => {
-  it('should return user status if there is an existing user', async () => {
+  before(async () => {
     const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
     await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
+  });
+
+  after(async () => {
+    await User.deleteMany();
+    await mongoose.disconnect();
+  });
+
+  it('should return user status if there is an existing user', async () => {
     const rawUser = new User({
       name: 'Hung',
       email: 'hung@hung.com',
@@ -35,8 +43,6 @@ describe('User Controller - Update User Status', () => {
     res.json;
 
     await userController.updateUserStatus(req, res, () => {});
-    await User.deleteMany();
-    await mongoose.disconnect();
     expect(res.statusCode).to.be.equal(200);
     expect(res.message).to.be.equal('Status updated');
   });
