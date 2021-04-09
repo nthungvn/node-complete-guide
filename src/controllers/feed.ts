@@ -1,4 +1,4 @@
-import { default as validator } from 'validator';
+import { default as validator } from 'express-validator';
 import Post from '../models/post.js';
 import { deleteFile } from '../utils/file.js';
 import { throwNotFound } from '../utils/error.js';
