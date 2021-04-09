@@ -1,5 +1,7 @@
-const { ObjectId } = require('mongodb');
-const mongoose = require('mongoose');
+import mongodb from 'mongodb';
+import mongoose from 'mongoose';
+
+const { ObjectId } = mongodb;
 
 const postSchema = new mongoose.Schema(
   {
@@ -26,4 +28,4 @@ const postSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model('Post', postSchema);
+export default mongoose.model('Post', postSchema);

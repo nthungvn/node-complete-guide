@@ -1,12 +1,13 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+import jwt from 'jsonwebtoken';
+import User from '../models/user.js';
+
 /**
  *
  * @param {import("express").Request} req
  * @param {*} res
  * @param {*} next
  */
-module.exports = async (req, res, next) => {
+export default async (req, res, next) => {
   if (req.method === 'OPTIONS') {
     return next();
   }

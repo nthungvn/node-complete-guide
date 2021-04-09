@@ -1,15 +1,14 @@
+import { checkAuthenticate } from '../utils/auth.js';
 
-const {checkAuthenticate} = require('../utils/auth');
-
-exports.getUser = async (_, req) => {
+const getUser = async (_, req) => {
   checkAuthenticate(req);
   return {
     ...req.user._doc,
-    _id: req.user._doc._id.toString()
+    _id: req.user._doc._id.toString(),
   };
 };
 
-exports.updateUserStatus = async ({ status }, req) => {
+const updateUserStatus = async ({ status }, req) => {
   checkAuthenticate(req);
   req.user.status = status;
   try {
@@ -19,3 +18,5 @@ exports.updateUserStatus = async ({ status }, req) => {
     throw error;
   }
 };
+
+export { getUser, updateUserStatus };

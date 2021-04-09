@@ -1,15 +1,18 @@
-const express = require('express');
-const path = require('path');
-const mongoose = require('mongoose');
-const multer = require('multer');
-const { graphqlHTTP } = require('express-graphql');
+import express from 'express';
+import path from 'path';
+import mongoose from 'mongoose';
+import multer from 'multer';
+import graphql from 'express-graphql';
+import { fileURLToPath } from 'url';
 
-const cors = require('./middlewares/cors');
-const serverError = require('./middlewares/server-error');
-const graphqlSchema = require('./graphql/schema');
-const graphqlResolvers = require('./graphql/resolvers');
-const auth = require('./middlewares/auth');
-const { deleteFile } = require('./utils/file');
+import cors from './middlewares/cors.js';
+import serverError from './middlewares/server-error.js';
+import graphqlSchema from './graphql/schema.js';
+import graphqlResolvers from './graphql/resolvers.js';
+import auth from './middlewares/auth.js';
+import { deleteFile } from './utils/file.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
@@ -59,7 +62,7 @@ app.put('/post-image', (req, res, _) => {
 });
 app.use(
   '/graphql',
-  graphqlHTTP({
+  graphql.graphqlHTTP({
     schema: graphqlSchema,
     rootValue: graphqlResolvers,
     graphiql: true,

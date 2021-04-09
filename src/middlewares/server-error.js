@@ -1,4 +1,4 @@
-module.exports = (error, req, res, next) => {
+export default (error, _, res, __) => {
   const statusCode = error.statusCode || 500;
 
   if (statusCode === 500) {

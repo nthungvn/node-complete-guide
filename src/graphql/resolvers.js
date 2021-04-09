@@ -1,14 +1,14 @@
-const { postSignup, postLogin } = require('../controllers/auth');
-const {
+import { postSignup, postLogin } from '../controllers/auth.js';
+import {
   createPost,
   deletePost,
   getPost,
   getPosts,
   updatePost,
-} = require('../controllers/feed');
-const { getUser, updateUserStatus } = require('../controllers/user');
+} from '../controllers/feed.js';
+import { getUser, updateUserStatus } from '../controllers/user.js';
 
-module.exports = {
+export default {
   createUser: postSignup,
   login: postLogin,
   createPost: createPost,

@@ -1,10 +1,10 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const validator = require('validator').default;
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { default as validator } from 'validator';
 
-const User = require('../models/user');
+import User from '../models/user.js';
 
-exports.postSignup = async ({ userInput }, req) => {
+const postSignup = async ({ userInput }, req) => {
   const { name, email, password } = userInput;
   const errors = [];
   if (!validator.isEmail(email)) {
@@ -53,7 +53,7 @@ exports.postSignup = async ({ userInput }, req) => {
   }
 };
 
-exports.postLogin = async (args, _) => {
+const postLogin = async (args, _) => {
   const { email, password } = args;
   const errors = [];
   if (!validator.isEmail(email)) {
@@ -103,3 +103,5 @@ exports.postLogin = async (args, _) => {
     token: token,
   };
 };
+
+export { postLogin, postSignup };

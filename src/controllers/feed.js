@@ -1,11 +1,10 @@
-const validator = require('validator').default;
+import { default as validator } from 'validator';
+import Post from '../models/post.js';
+import { deleteFile } from '../utils/file.js';
+import { throwNotFound } from '../utils/error.js';
+import { checkAuthenticate } from '../utils/auth.js';
 
-const Post = require('../models/post');
-const { deleteFile } = require('../utils/file');
-const { throwNotFound } = require('../utils/error');
-const {checkAuthenticate} = require('../utils/auth');
-
-exports.getPosts = async (args, req) => {
+const getPosts = async (args, req) => {
   checkAuthenticate(req);
   const page = args.page || 1;
   const ITEMS_PER_PAGE = 2;
@@ -31,7 +30,7 @@ exports.getPosts = async (args, req) => {
   }
 };
 
-exports.getPost = async ({ postId }, req) => {
+const getPost = async ({ postId }, req) => {
   checkAuthenticate(req);
   try {
     const post = await Post.findOne({ _id: postId }).populate(
@@ -52,7 +51,7 @@ exports.getPost = async ({ postId }, req) => {
   }
 };
 
-exports.createPost = async ({ postInput }, req) => {
+const createPost = async ({ postInput }, req) => {
   checkAuthenticate(req);
   const { title, content, imageUrl } = postInput;
 
@@ -95,7 +94,7 @@ exports.createPost = async ({ postInput }, req) => {
   }
 };
 
-exports.updatePost = async ({ postId, postInput }, req) => {
+const updatePost = async ({ postId, postInput }, req) => {
   checkAuthenticate(req);
   const { title, content, imageUrl } = postInput;
 
@@ -140,7 +139,7 @@ exports.updatePost = async ({ postId, postInput }, req) => {
   }
 };
 
-exports.deletePost = async ({ postId }, req) => {
+const deletePost = async ({ postId }, req) => {
   checkAuthenticate(req);
   try {
     const post = await Post.findOne({ _id: postId, creator: req.user._id });
@@ -157,3 +156,5 @@ exports.deletePost = async ({ postId }, req) => {
     throw error;
   }
 };
+
+export { getPosts, getPost, createPost, updatePost, deletePost };

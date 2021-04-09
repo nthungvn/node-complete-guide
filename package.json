@@ -2,6 +2,7 @@
   "name": "node-complete-guide",
   "version": "1.0.0",
   "description": "Node.js - The Complete Guide",
+  "type": "module",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
