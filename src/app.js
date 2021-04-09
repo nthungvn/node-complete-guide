@@ -3,16 +3,13 @@ import path from 'path';
 import mongoose from 'mongoose';
 import multer from 'multer';
 import graphql from 'express-graphql';
-import { fileURLToPath } from 'url';
 
 import cors from './middlewares/cors.js';
 import serverError from './middlewares/server-error.js';
 import graphqlSchema from './graphql/schema.js';
 import graphqlResolvers from './graphql/resolvers.js';
 import auth from './middlewares/auth.js';
-import { deleteFile } from './utils/file.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import { deleteFile, __dirname } from './utils/file.js';
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
