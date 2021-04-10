@@ -1,10 +1,11 @@
-import { default as validator } from 'express-validator';
+import validator from 'validator';
 import Post from '../models/post.js';
-import { deleteFile } from '../utils/file.js';
-import { throwNotFound } from '../utils/error.js';
 import { checkAuthenticate } from '../utils/auth.js';
+import { CustomError, throwNotFound } from '../utils/error.js';
+import { CustomRequest } from '../utils/express-extended.js';
+import { deleteFile } from '../utils/file.js';
 
-const getPosts = async (args, req) => {
+const getPosts = async (args: { page: number }, req: CustomRequest) => {
   checkAuthenticate(req);
   const page = args.page || 1;
   const ITEMS_PER_PAGE = 2;
@@ -30,30 +31,34 @@ const getPosts = async (args, req) => {
   }
 };
 
-const getPost = async ({ postId }, req) => {
+const getPost = async (args: { postId: string }, req: CustomRequest) => {
   checkAuthenticate(req);
   try {
-    const post = await Post.findOne({ _id: postId }).populate(
+    const post = await Post.findOne({ _id: args.postId }).populate(
       'creator',
       'name email',
     );
     if (!post) {
       throwNotFound('No post found');
+    } else {
+      return {
+        _id: post._id.toString(),
+        ...post._doc,
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString(),
+      };
     }
-    return {
-      _id: post._id.toString(),
-      ...post._doc,
-      createdAt: post.createdAt.toISOString(),
-      updatedAt: post.updatedAt.toISOString(),
-    };
   } catch (error) {
     throw error;
   }
 };
 
-const createPost = async ({ postInput }, req) => {
+const createPost = async (
+  args: { postInput: { title: string; content: string; imageUrl: string } },
+  req: CustomRequest,
+) => {
   checkAuthenticate(req);
-  const { title, content, imageUrl } = postInput;
+  const { title, content, imageUrl } = args.postInput;
 
   const errors = [];
 
@@ -66,7 +71,7 @@ const createPost = async ({ postInput }, req) => {
   }
 
   if (errors.length > 0) {
-    const error = new Error('Validation failed');
+    const error: CustomError = new Error('Validation failed');
     error.statusCode = 422;
     error.data = errors;
     throw error;
@@ -81,8 +86,8 @@ const createPost = async ({ postInput }, req) => {
 
   try {
     const result = await post.save();
-    req.user.posts.push(result);
-    await req.user.save();
+    req.user!.posts.push(result._id);
+    await req.user!.save();
     return {
       ...result._doc,
       _id: result._id.toString(),
@@ -94,9 +99,15 @@ const createPost = async ({ postInput }, req) => {
   }
 };
 
-const updatePost = async ({ postId, postInput }, req) => {
+const updatePost = async (
+  args: {
+    postId: string;
+    postInput: { title: string; content: string; imageUrl: string };
+  },
+  req: CustomRequest,
+) => {
   checkAuthenticate(req);
-  const { title, content, imageUrl } = postInput;
+  const { title, content, imageUrl } = args.postInput;
 
   const errors = [];
 
@@ -109,49 +120,58 @@ const updatePost = async ({ postId, postInput }, req) => {
   }
 
   if (errors.length > 0) {
-    const error = new Error('Validation failed');
+    const error: CustomError = new Error('Validation failed');
     error.statusCode = 422;
     error.data = errors;
     throw error;
   }
 
   try {
-    const post = await Post.findOne({ _id: postId, creator: req.user });
+    const post = await Post.findOne({
+      _id: args.postId,
+      creator: req.user!._id,
+    });
     if (!post) {
       throwNotFound('No post found');
-    }
-    post.title = title;
-    post.content = content;
-    if (imageUrl !== 'undefined') {
-      post.imageUrl = imageUrl;
-    }
+    } else {
+      post.title = title;
+      post.content = content;
+      if (imageUrl !== 'undefined') {
+        post.imageUrl = imageUrl;
+      }
 
-    const updatedPost = await post.save();
-    return {
-      ...updatedPost._doc,
-      _id: updatedPost._id.toString(),
-      createdAt: updatedPost.createdAt.toISOString(),
-      updatedAt: updatedPost.updatedAt.toISOString(),
-      creator: req.user,
-    };
+      const updatedPost = await post.save();
+      return {
+        ...updatedPost._doc,
+        _id: updatedPost._id.toString(),
+        createdAt: updatedPost.createdAt.toISOString(),
+        updatedAt: updatedPost.updatedAt.toISOString(),
+        creator: req.user,
+      };
+    }
   } catch (error) {
     throw error;
   }
 };
 
-const deletePost = async ({ postId }, req) => {
+const deletePost = async (args: { postId: string }, req: CustomRequest) => {
   checkAuthenticate(req);
   try {
-    const post = await Post.findOne({ _id: postId, creator: req.user._id });
+    const post = await Post.findOne({
+      _id: args.postId,
+      creator: req.user!._id,
+    });
     if (!post) {
       throwNotFound('No post found');
+    } else {
+      req.user!.posts = req.user!.posts.filter((postId) => postId !== post._id);
+      await Promise.all([
+        deleteFile(post.imageUrl),
+        post.remove(),
+        req.user!.save(),
+      ]).catch((error) => console.log(error));
+      return 'Post deleted';
     }
-    req.user.posts.pull(post._id);
-    await Promise.all([deleteFile(post.imageUrl), post.remove()]).catch(
-      (error) => console.log(error),
-      req.user.save(),
-    );
-    return 'Post deleted';
   } catch (error) {
     throw error;
   }

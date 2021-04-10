@@ -1,7 +1,5 @@
 import mongodb from 'mongodb';
-import mongoose from 'mongoose';
-
-const { ObjectId } = mongodb;
+import mongoose, { Document } from 'mongoose';
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,10 +20,19 @@ const userSchema = new mongoose.Schema({
   },
   posts: [
     {
-      type: ObjectId,
+      type: mongodb.ObjectID,
       ref: 'Post',
     },
   ],
 });
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model<IUser>('User', userSchema);
+
+export interface IUser extends Document {
+  _doc: any;
+  name: string;
+  email: string;
+  password: string;
+  status: string;
+  posts: mongodb.ObjectID[];
+}

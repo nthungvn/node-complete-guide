@@ -10,6 +10,8 @@ import graphqlSchema from './graphql/schema.js';
 import graphqlResolvers from './graphql/resolvers.js';
 import auth from './middlewares/auth.js';
 import { deleteFile, __dirname } from './utils/file.js';
+import { CustomRequest } from './utils/express-extended.js';
+import { CustomError } from './utils/error.js';
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.oipin.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
@@ -20,7 +22,11 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (req, file, cb) => {
+const fileFilter = (
+  _: any,
+  file: { mimetype: string },
+  cb: (f: any, s: any) => void,
+) => {
   if (
     file.mimetype === 'image/jpeg' ||
     file.mimetype === 'image/jpg' ||
@@ -39,9 +45,9 @@ app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use(auth);
-app.put('/post-image', (req, res, _) => {
+app.put('/post-image', (req: CustomRequest, res, _) => {
   if (!req.isAuth) {
-    const error = new Error('Not authenticated');
+    const error: CustomError = new Error('Not authenticated');
     error.statusCode = 401;
     throw error;
   }
@@ -54,7 +60,7 @@ app.put('/post-image', (req, res, _) => {
   }
   res.status(201).json({
     message: 'Image was uploaded!',
-    imagePath: req.file.path
+    imagePath: req.file.path,
   });
 });
 app.use(
@@ -69,8 +75,8 @@ app.use(
       }
       return {
         message: error.message || 'Unexpected error',
-        statusCode: error.originalError.statusCode || 500,
-        data: error.originalError.data,
+        statusCode: (error.originalError as CustomError).statusCode || 500,
+        data: (error.originalError as CustomError).data,
       };
     },
   }),

@@ -1,7 +1,5 @@
 import mongodb from 'mongodb';
-import mongoose from 'mongoose';
-
-const { ObjectId } = mongodb;
+import mongoose, { Document } from 'mongoose';
 
 const postSchema = new mongoose.Schema(
   {
@@ -18,7 +16,7 @@ const postSchema = new mongoose.Schema(
       required: true,
     },
     creator: {
-      type: ObjectId,
+      type: mongodb.ObjectID,
       required: true,
       ref: 'User',
     },
@@ -28,4 +26,13 @@ const postSchema = new mongoose.Schema(
   },
 );
 
-export default mongoose.model('Post', postSchema);
+export default mongoose.model<IPost>('Post', postSchema);
+export interface IPost extends Document {
+  _doc: any;
+  title: string;
+  content: string;
+  imageUrl: string;
+  creator: mongodb.ObjectID;
+  createdAt: Date;
+  updatedAt: Date;
+}

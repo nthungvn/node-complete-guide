@@ -1,18 +1,21 @@
 import { checkAuthenticate } from '../utils/auth.js';
+import { CustomRequest } from '../utils/express-extended.js';
 
-const getUser = async (_, req) => {
+const getUser = async (_: any, req: CustomRequest) => {
   checkAuthenticate(req);
   return {
-    ...req.user._doc,
-    _id: req.user._doc._id.toString(),
+    ...req.user?._doc,
+    _id: req.user?._doc._id.toString(),
   };
 };
 
-const updateUserStatus = async ({ status }, req) => {
+const updateUserStatus = async (args: {status: string}, req: CustomRequest) => {
   checkAuthenticate(req);
-  req.user.status = status;
+  if (req.user) {
+    req.user.status = args.status;
+  }
   try {
-    await req.user.save();
+    await req.user?.save();
     return 'Status updated';
   } catch (error) {
     throw error;

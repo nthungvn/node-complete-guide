@@ -1,13 +1,9 @@
+import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
+import { CustomRequest } from '../utils/express-extended.js';
 
-/**
- *
- * @param {import("express").Request} req
- * @param {*} res
- * @param {*} next
- */
-export default async (req, res, next) => {
+const handler: RequestHandler = async (req: CustomRequest, _, next) => {
   if (req.method === 'OPTIONS') {
     return next();
   }
@@ -21,7 +17,7 @@ export default async (req, res, next) => {
 
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, 'my-secret');
+    decodedToken = jwt.verify(token, 'my-secret') as { email: string };
     if (!decodedToken) {
       throw new Error();
     }
@@ -42,3 +38,4 @@ export default async (req, res, next) => {
     next(error);
   }
 };
+export default handler;

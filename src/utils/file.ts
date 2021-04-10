@@ -4,6 +4,6 @@ import { fileURLToPath } from 'url';
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export const deleteFile = (filePath) => {
+export const deleteFile = (filePath: string) => {
   return fs.unlink(path.join(__dirname, '..', '..', filePath));
 };

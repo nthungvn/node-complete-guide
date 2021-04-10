@@ -1,5 +1,7 @@
+import { RequestHandler } from 'express';
+
 export default () => {
-  return (req, res, next) => {
+  const handler: RequestHandler = (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader(
       'Access-Control-Allow-Methods',
@@ -14,4 +16,5 @@ export default () => {
     }
     next();
   };
+  return handler;
 };

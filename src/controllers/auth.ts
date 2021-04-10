@@ -1,11 +1,14 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { default as validator } from 'express-validator';
-
+import validator from 'validator';
 import User from '../models/user.js';
+import { CustomError } from '../utils/error.js';
 
-const postSignup = async ({ userInput }, req) => {
-  const { name, email, password } = userInput;
+const postSignup = async (
+  args: { userInput: { name: string; email: string; password: string } },
+  _: any,
+) => {
+  const { name, email, password } = args.userInput;
   const errors = [];
   if (!validator.isEmail(email)) {
     errors.push('Please enter correct email!');
@@ -15,16 +18,14 @@ const postSignup = async ({ userInput }, req) => {
   }
 
   if (
-    !validator.isLength(
-      password,
-      { min: 5 } && !validator.isAlphanumeric(password),
-    )
+    !validator.isLength(password, { min: 5 }) &&
+    !validator.isAlphanumeric(password)
   ) {
     errors.push('Password need at least 5 characters and Alphanumeric');
   }
 
   if (errors.length > 0) {
-    const error = new Error('Validation failed');
+    const error: CustomError = new Error('Validation failed');
     error.statusCode = 422;
     error.data = errors;
     throw error;
@@ -33,7 +34,7 @@ const postSignup = async ({ userInput }, req) => {
   try {
     const user = await User.findOne({ email: email });
     if (user) {
-      const error = new Error('User existed');
+      const error: CustomError = new Error('User existed');
       error.statusCode = 409;
       throw error;
     }
@@ -53,23 +54,21 @@ const postSignup = async ({ userInput }, req) => {
   }
 };
 
-const postLogin = async (args, _) => {
+const postLogin = async (args: { email: string; password: string }, _: any) => {
   const { email, password } = args;
   const errors = [];
   if (!validator.isEmail(email)) {
     errors.push('Please enter correct email!');
   }
   if (
-    !validator.isLength(
-      password,
-      { min: 5 } && !validator.isAlphanumeric(password),
-    )
+    !validator.isLength(password, { min: 5 }) &&
+    !validator.isAlphanumeric(password)
   ) {
     errors.push('Password need at least 5 characters and Alphanumeric');
   }
 
   if (errors.length > 0) {
-    const error = new Error('Validation failed');
+    const error: CustomError = new Error('Validation failed');
     error.statusCode = 422;
     error.data = errors;
     throw error;
@@ -77,13 +76,13 @@ const postLogin = async (args, _) => {
 
   const user = await User.findOne({ email: email });
   if (!user) {
-    const error = new Error('Not-existed user');
+    const error: CustomError = new Error('Not-existed user');
     error.statusCode = 401;
     throw error;
   }
   const doMatch = await bcrypt.compare(password, user.password);
   if (!doMatch) {
-    const error = new Error('User or password was wrong');
+    const error: CustomError = new Error('User or password was wrong');
     error.statusCode = 401;
     throw error;
   }
