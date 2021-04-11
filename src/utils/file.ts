@@ -2,8 +2,8 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import { fileURLToPath } from 'url';
 
-export const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export const deleteFile = (filePath: string) => {
+export const deleteImage = (filePath: string) => {
   return fs.unlink(path.join(__dirname, '..', '..', filePath));
 };

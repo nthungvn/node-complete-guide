@@ -3,7 +3,7 @@ import Post from '../models/post.js';
 import { checkAuthenticate } from '../utils/auth.js';
 import { CustomError, throwNotFound } from '../utils/error.js';
 import { CustomRequest } from '../utils/express-extended.js';
-import { deleteFile } from '../utils/file.js';
+import { deleteImage } from '../utils/file.js';
 
 const getPosts = async (args: { page: number }, req: CustomRequest) => {
   checkAuthenticate(req);
@@ -166,7 +166,7 @@ const deletePost = async (args: { postId: string }, req: CustomRequest) => {
     } else {
       req.user!.posts = req.user!.posts.filter((postId) => postId !== post._id);
       await Promise.all([
-        deleteFile(post.imageUrl),
+        deleteImage(post.imageUrl),
         post.remove(),
         req.user!.save(),
       ]).catch((error) => console.log(error));
