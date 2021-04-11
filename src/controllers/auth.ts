@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
-import User from '../models/user.js';
-import { CustomError } from '../utils/error.js';
+import User from '../models/user';
+import { CustomError } from '../utils/error';
 
 const postSignup = async (
   args: { userInput: { name: string; email: string; password: string } },

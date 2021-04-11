@@ -1,9 +1,9 @@
 import validator from 'validator';
-import Post from '../models/post.js';
-import { checkAuthenticate } from '../utils/auth.js';
-import { CustomError, throwNotFound } from '../utils/error.js';
-import { CustomRequest } from '../utils/express-extended.js';
-import { deleteImage } from '../utils/file.js';
+import Post from '../models/post';
+import { checkAuthenticate } from '../utils/auth';
+import { CustomError, throwNotFound } from '../utils/error';
+import { CustomRequest } from '../utils/express-extended';
+import { deleteImage } from '../utils/file';
 
 const getPosts = async (args: { page: number }, req: CustomRequest) => {
   checkAuthenticate(req);

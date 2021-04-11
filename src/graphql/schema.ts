@@ -1,6 +1,4 @@
-import graphql from 'graphql';
-
-const { buildSchema } = graphql;
+import { buildSchema } from 'graphql';
 
 export default buildSchema(`
   type Post {

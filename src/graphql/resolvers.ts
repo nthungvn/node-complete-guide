@@ -1,12 +1,12 @@
-import { postSignup, postLogin } from '../controllers/auth.js';
+import { postSignup, postLogin } from '../controllers/auth';
 import {
   createPost,
   deletePost,
   getPost,
   getPosts,
   updatePost,
-} from '../controllers/feed.js';
-import { getUser, updateUserStatus } from '../controllers/user.js';
+} from '../controllers/feed';
+import { getUser, updateUserStatus } from '../controllers/user';
 
 export default {
   createUser: postSignup,

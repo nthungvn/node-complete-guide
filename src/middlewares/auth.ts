@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
-import User from '../models/user.js';
-import { CustomRequest } from '../utils/express-extended.js';
+import User from '../models/user';
+import { CustomRequest } from '../utils/express-extended';
 
 const handler: RequestHandler = async (req: CustomRequest, _, next) => {
   if (req.method === 'OPTIONS') {

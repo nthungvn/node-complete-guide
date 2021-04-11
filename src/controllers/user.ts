@@ -1,5 +1,5 @@
-import { checkAuthenticate } from '../utils/auth.js';
-import { CustomRequest } from '../utils/express-extended.js';
+import { checkAuthenticate } from '../utils/auth';
+import { CustomRequest } from '../utils/express-extended';
 
 const getUser = async (_: any, req: CustomRequest) => {
   checkAuthenticate(req);
