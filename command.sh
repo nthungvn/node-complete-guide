@@ -1,3 +1,3 @@
 #! /bin/bash
 
-deno run app.ts
+deno run --allow-write app.ts
