@@ -2,7 +2,7 @@ import { Router } from 'https://deno.land/x/oak@v6.5.0/mod.ts';
 
 interface Todo {
   id: string;
-  content: string;
+  text: string;
 }
 
 const router = new Router();
@@ -27,7 +27,7 @@ router.post('/todos', async (ctx, _) => {
   const data = await ctx.request.body().value;
   const todo: Todo = {
     id: Date.now().toString(),
-    content: data.content,
+    text: data.text,
   };
   todos.push(todo);
   ctx.response.body = { todo: todo };
@@ -39,7 +39,7 @@ router.put('/todos/:todoId', async (ctx, _) => {
   const id = ctx.params.todoId!;
   const todoIndex = todos.findIndex((todo) => todo.id === id);
   if (todoIndex !== -1) {
-    todos[todoIndex] = { id: id, content: data.content };
+    todos[todoIndex] = { id: id, text: data.text };
     ctx.response.body = { message: 'Updated', todos: todos };
     return;
   }
