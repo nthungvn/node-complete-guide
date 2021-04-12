@@ -1,7 +1,8 @@
-const http = require('http');
+const express = require('express');
+const todoRoutes = require('./routes/todos');
 
-const server = http.createServer((req, res) => {
-  res.end('<h1>Hello world from Node.js</h1>');
-});
+const app = express();
+app.use(express.json());
+app.use('/todos', todoRoutes);
 
-server.listen(3000);
+app.listen(3000);
