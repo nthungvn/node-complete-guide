@@ -1,5 +1,5 @@
 #! /bin/bash
 
-deno run --allow-net app.ts
+deno run --allow-net app-deno.ts
 
-node app.js
+node app-node.js
