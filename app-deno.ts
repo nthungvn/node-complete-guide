@@ -1,5 +1,8 @@
 import { Application } from 'https://deno.land/x/oak@v6.5.0/mod.ts';
 import todoRoutes from './routes/todos-deno.ts';
+import { connect } from './helpers/db_client.ts';
+
+connect();
 
 const app = new Application();
 
