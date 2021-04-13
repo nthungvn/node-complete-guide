@@ -9,8 +9,17 @@ export async function connect() {
     db: 'node-complete-guide-deno',
     tls: true,
     servers: [
+      // {
+      //   host: 'cluster0-shard-00-00.oipin.mongodb.net',
+      //   port: 27017,
+      // },
+      // {
+      //   host: 'cluster0-shard-00-01.oipin.mongodb.net',
+      //   port: 27017,
+      // },
       {
-        host: 'cluster0-shard-00-00.oipin.mongodb.net',
+        // This node can be written
+        host: 'cluster0-shard-00-02.oipin.mongodb.net',
         port: 27017,
       },
     ],
@@ -21,6 +30,7 @@ export async function connect() {
       mechanism: 'SCRAM-SHA-1',
     },
   });
+  console.log('Connected to Mongo Atlas');
 }
 
 export function getDb() {
