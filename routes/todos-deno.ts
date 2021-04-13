@@ -1,5 +1,5 @@
 import { Router } from 'https://deno.land/x/oak@v6.5.0/mod.ts';
-import { ObjectID } from 'https://deno.land/x/mongo@v0.22.0/bson/mod.ts';
+import { ObjectId } from 'https://deno.land/x/mongo@v0.13.0/mod.ts';
 
 import { getDb } from '../helpers/db_client.ts';
 
@@ -27,7 +27,7 @@ router.get('/todos/:todoId', async (ctx, _) => {
   try {
     const todo = await getDb()
       .collection('todos')
-      .findOne({ _id: new ObjectID(ctx.params.todoId) });
+      .findOne({ _id: ObjectId(ctx.params.todoId!) });
     if (todo) {
       ctx.response.body = { todo: todo };
       return;
