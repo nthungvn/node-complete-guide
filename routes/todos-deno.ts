@@ -8,15 +8,21 @@ interface Todo {
   text: string;
 }
 
+interface TodoMongo {
+  _id: ObjectId;
+  text: string;
+}
+
 const router = new Router();
 
 router.get('/todos', async (ctx, _) => {
   try {
     const todos = await getDb().collection('todos').find();
     ctx.response.body = {
-      todos: todos.map((todo: any) => {
-        return { id: todo._id.$oid, text: todo.text };
-      }),
+      todos: todos.map((todo: TodoMongo) => ({
+        id: todo._id.$oid,
+        text: todo.text,
+      })),
     };
   } catch (error) {
     console.log(error);
@@ -46,7 +52,6 @@ router.post('/todos', async (ctx, _) => {
       text: data.text,
     };
     const createdId = await getDb().collection('todos').insertOne(todo);
-    todo.id = createdId.$oid;
     ctx.response.body = { todo: { id: createdId.$oid, text: todo.text } };
     ctx.response.status = 201;
   } catch (error) {
