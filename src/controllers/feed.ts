@@ -1,3 +1,4 @@
+import mongodb from 'mongodb';
 import validator from 'validator';
 import Post from '../models/post';
 import { checkAuthenticate } from '../utils/auth';
@@ -164,7 +165,9 @@ const deletePost = async (args: { postId: string }, req: CustomRequest) => {
     if (!post) {
       throwNotFound('No post found');
     } else {
-      req.user!.posts = req.user!.posts.filter((postId) => postId !== post._id);
+      req.user!.posts = (req.user!.posts as Array<mongodb.ObjectID>).filter(
+        (postId: mongodb.ObjectID) => postId !== post._id,
+      );
       await Promise.all([
         deleteImage(post.imageUrl),
         post.remove(),

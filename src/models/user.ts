@@ -1,7 +1,20 @@
 import mongodb from 'mongodb';
 import mongoose, { Document } from 'mongoose';
+import { PostDocument } from './post';
 
-const userSchema = new mongoose.Schema({
+interface IUser {
+  name: string;
+  email: string;
+  password: string;
+  status: string;
+  posts: mongodb.ObjectID[] | PostDocument[];
+}
+
+export interface UserDocument extends IUser, Document {
+  _doc: any;
+}
+
+const userSchemaFields: Record<keyof IUser, any> = {
   name: {
     type: String,
     required: true,
@@ -24,15 +37,8 @@ const userSchema = new mongoose.Schema({
       ref: 'Post',
     },
   ],
-});
+};
 
-export default mongoose.model<IUser>('User', userSchema);
+const userSchema = new mongoose.Schema(userSchemaFields);
 
-export interface IUser extends Document {
-  _doc: any;
-  name: string;
-  email: string;
-  password: string;
-  status: string;
-  posts: mongodb.ObjectID[];
-}
+export default mongoose.model<UserDocument>('User', userSchema);
